@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A944C0F91BC16615005495AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C0F81BC16615005495AF /* main.m */; };
+		A944C0FC1BC16615005495AF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C0FB1BC16615005495AF /* AppDelegate.m */; };
+		A944C0FF1BC16615005495AF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C0FE1BC16615005495AF /* ViewController.m */; };
+		A944C1021BC16615005495AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A944C1001BC16615005495AF /* Main.storyboard */; };
+		A944C1041BC16615005495AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A944C1031BC16615005495AF /* Assets.xcassets */; };
+		A944C1071BC16615005495AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A944C1051BC16615005495AF /* LaunchScreen.storyboard */; };
+		A944C1121BC16615005495AF /* MarkNoteParserOCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1111BC16615005495AF /* MarkNoteParserOCTests.m */; };
+		A944C11E1BC17AF0005495AF /* MarkNoteParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C11D1BC17AF0005495AF /* MarkNoteParser.m */; settings = {ASSET_TAGS = (); }; };
+		A944C1211BC17DCB005495AF /* URLTag.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1201BC17DCB005495AF /* URLTag.m */; settings = {ASSET_TAGS = (); }; };
+		A944C1241BC18079005495AF /* NSString+Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1231BC18079005495AF /* NSString+Addition.m */; settings = {ASSET_TAGS = (); }; };
+		A944C1261BC181AE005495AF /* NSStringAdditionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1251BC181AE005495AF /* NSStringAdditionTests.m */; settings = {ASSET_TAGS = (); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A944C10E1BC16615005495AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A944C0EC1BC16615005495AF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A944C0F31BC16615005495AF;
+			remoteInfo = MarkNoteParserOC;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A944C0F41BC16615005495AF /* MarkNoteParserOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarkNoteParserOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A944C0F81BC16615005495AF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A944C0FA1BC16615005495AF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A944C0FB1BC16615005495AF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A944C0FD1BC16615005495AF /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		A944C0FE1BC16615005495AF /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		A944C1011BC16615005495AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A944C1031BC16615005495AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A944C1061BC16615005495AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A944C1081BC16615005495AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A944C10D1BC16615005495AF /* MarkNoteParserOCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MarkNoteParserOCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A944C1111BC16615005495AF /* MarkNoteParserOCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MarkNoteParserOCTests.m; sourceTree = "<group>"; };
+		A944C1131BC16615005495AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A944C11C1BC17AF0005495AF /* MarkNoteParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkNoteParser.h; sourceTree = "<group>"; };
+		A944C11D1BC17AF0005495AF /* MarkNoteParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkNoteParser.m; sourceTree = "<group>"; };
+		A944C11F1BC17DCB005495AF /* URLTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLTag.h; sourceTree = "<group>"; };
+		A944C1201BC17DCB005495AF /* URLTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLTag.m; sourceTree = "<group>"; };
+		A944C1221BC18079005495AF /* NSString+Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Addition.h"; sourceTree = "<group>"; };
+		A944C1231BC18079005495AF /* NSString+Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Addition.m"; sourceTree = "<group>"; };
+		A944C1251BC181AE005495AF /* NSStringAdditionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringAdditionTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A944C0F11BC16615005495AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A944C10A1BC16615005495AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A944C0EB1BC16615005495AF = {
+			isa = PBXGroup;
+			children = (
+				A944C0F61BC16615005495AF /* MarkNoteParserOC */,
+				A944C1101BC16615005495AF /* MarkNoteParserOCTests */,
+				A944C0F51BC16615005495AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A944C0F51BC16615005495AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A944C0F41BC16615005495AF /* MarkNoteParserOC.app */,
+				A944C10D1BC16615005495AF /* MarkNoteParserOCTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A944C0F61BC16615005495AF /* MarkNoteParserOC */ = {
+			isa = PBXGroup;
+			children = (
+				A944C0FA1BC16615005495AF /* AppDelegate.h */,
+				A944C0FB1BC16615005495AF /* AppDelegate.m */,
+				A944C0FD1BC16615005495AF /* ViewController.h */,
+				A944C0FE1BC16615005495AF /* ViewController.m */,
+				A944C1001BC16615005495AF /* Main.storyboard */,
+				A944C1031BC16615005495AF /* Assets.xcassets */,
+				A944C1051BC16615005495AF /* LaunchScreen.storyboard */,
+				A944C1081BC16615005495AF /* Info.plist */,
+				A944C0F71BC16615005495AF /* Supporting Files */,
+				A944C11C1BC17AF0005495AF /* MarkNoteParser.h */,
+				A944C11D1BC17AF0005495AF /* MarkNoteParser.m */,
+				A944C11F1BC17DCB005495AF /* URLTag.h */,
+				A944C1201BC17DCB005495AF /* URLTag.m */,
+				A944C1221BC18079005495AF /* NSString+Addition.h */,
+				A944C1231BC18079005495AF /* NSString+Addition.m */,
+			);
+			path = MarkNoteParserOC;
+			sourceTree = "<group>";
+		};
+		A944C0F71BC16615005495AF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A944C0F81BC16615005495AF /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A944C1101BC16615005495AF /* MarkNoteParserOCTests */ = {
+			isa = PBXGroup;
+			children = (
+				A944C1111BC16615005495AF /* MarkNoteParserOCTests.m */,
+				A944C1131BC16615005495AF /* Info.plist */,
+				A944C1251BC181AE005495AF /* NSStringAdditionTests.m */,
+			);
+			path = MarkNoteParserOCTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A944C0F31BC16615005495AF /* MarkNoteParserOC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A944C1161BC16615005495AF /* Build configuration list for PBXNativeTarget "MarkNoteParserOC" */;
+			buildPhases = (
+				A944C0F01BC16615005495AF /* Sources */,
+				A944C0F11BC16615005495AF /* Frameworks */,
+				A944C0F21BC16615005495AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MarkNoteParserOC;
+			productName = MarkNoteParserOC;
+			productReference = A944C0F41BC16615005495AF /* MarkNoteParserOC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A944C10C1BC16615005495AF /* MarkNoteParserOCTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A944C1191BC16615005495AF /* Build configuration list for PBXNativeTarget "MarkNoteParserOCTests" */;
+			buildPhases = (
+				A944C1091BC16615005495AF /* Sources */,
+				A944C10A1BC16615005495AF /* Frameworks */,
+				A944C10B1BC16615005495AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A944C10F1BC16615005495AF /* PBXTargetDependency */,
+			);
+			name = MarkNoteParserOCTests;
+			productName = MarkNoteParserOCTests;
+			productReference = A944C10D1BC16615005495AF /* MarkNoteParserOCTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A944C0EC1BC16615005495AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = marknote;
+				TargetAttributes = {
+					A944C0F31BC16615005495AF = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+					A944C10C1BC16615005495AF = {
+						CreatedOnToolsVersion = 7.0.1;
+						TestTargetID = A944C0F31BC16615005495AF;
+					};
+				};
+			};
+			buildConfigurationList = A944C0EF1BC16615005495AF /* Build configuration list for PBXProject "MarkNoteParserOC" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A944C0EB1BC16615005495AF;
+			productRefGroup = A944C0F51BC16615005495AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A944C0F31BC16615005495AF /* MarkNoteParserOC */,
+				A944C10C1BC16615005495AF /* MarkNoteParserOCTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A944C0F21BC16615005495AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A944C1071BC16615005495AF /* LaunchScreen.storyboard in Resources */,
+				A944C1041BC16615005495AF /* Assets.xcassets in Resources */,
+				A944C1021BC16615005495AF /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A944C10B1BC16615005495AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A944C0F01BC16615005495AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A944C0FF1BC16615005495AF /* ViewController.m in Sources */,
+				A944C1241BC18079005495AF /* NSString+Addition.m in Sources */,
+				A944C11E1BC17AF0005495AF /* MarkNoteParser.m in Sources */,
+				A944C1211BC17DCB005495AF /* URLTag.m in Sources */,
+				A944C0FC1BC16615005495AF /* AppDelegate.m in Sources */,
+				A944C0F91BC16615005495AF /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A944C1091BC16615005495AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A944C1121BC16615005495AF /* MarkNoteParserOCTests.m in Sources */,
+				A944C1261BC181AE005495AF /* NSStringAdditionTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A944C10F1BC16615005495AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A944C0F31BC16615005495AF /* MarkNoteParserOC */;
+			targetProxy = A944C10E1BC16615005495AF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A944C1001BC16615005495AF /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A944C1011BC16615005495AF /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A944C1051BC16615005495AF /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A944C1061BC16615005495AF /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A944C1141BC16615005495AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A944C1151BC16615005495AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A944C1171BC16615005495AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MarkNoteParserOC/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = marknote.MarkNoteParserOC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A944C1181BC16615005495AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = MarkNoteParserOC/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = marknote.MarkNoteParserOC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		A944C11A1BC16615005495AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = MarkNoteParserOCTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = marknote.MarkNoteParserOCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MarkNoteParserOC.app/MarkNoteParserOC";
+			};
+			name = Debug;
+		};
+		A944C11B1BC16615005495AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = MarkNoteParserOCTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = marknote.MarkNoteParserOCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MarkNoteParserOC.app/MarkNoteParserOC";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A944C0EF1BC16615005495AF /* Build configuration list for PBXProject "MarkNoteParserOC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A944C1141BC16615005495AF /* Debug */,
+				A944C1151BC16615005495AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A944C1161BC16615005495AF /* Build configuration list for PBXNativeTarget "MarkNoteParserOC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A944C1171BC16615005495AF /* Debug */,
+				A944C1181BC16615005495AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		A944C1191BC16615005495AF /* Build configuration list for PBXNativeTarget "MarkNoteParserOCTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A944C11A1BC16615005495AF /* Debug */,
+				A944C11B1BC16615005495AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A944C0EC1BC16615005495AF /* Project object */;
+}
