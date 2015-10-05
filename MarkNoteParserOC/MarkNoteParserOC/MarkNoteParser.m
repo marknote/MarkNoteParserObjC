@@ -54,7 +54,7 @@ const unichar headerChar = '#';
 -(void) proceedReference{
     for (ReferenceUsageInfo* refer in arrReferenceUsage) {
         NSPredicate *predicte = [NSPredicate predicateWithFormat:
-                                 @"%k like %@",@"key", refer.key.lowercaseString];
+                                 @"key like %@", refer.key.lowercaseString];
         NSArray* hitted = [arrReferenceInfo filteredArrayUsingPredicate:predicte];
         if (hitted.count > 0) {
             ReferenceDefinition* found = hitted[0];

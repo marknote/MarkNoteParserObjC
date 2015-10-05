@@ -133,20 +133,20 @@ void assertHtmlEauql(NSString* expected,NSString* actual){
 }
 
 - (void)testEmphasis {
-    assertHtmlEauql("<p><em>Hello</em></p>\n", markdown("*Hello*"), "Emphasis Asterisk Pass")
-    assertHtmlEauql("<p><em>World</em></p>\n", markdown("_World_"), "Emphasis Underscope Pass")
-    assertHtmlEauql("<p>123<em>Hello</em>456</p>\n", markdown("123*Hello*456"), "Emphasis Asterisk Pass")
-    assertHtmlEauql("<p>123<em>World</em>456</p>\n", markdown("123_World_456"), "Emphasis Underscope Pass")
-    assertHtmlEauql("<p>123<em>Hello</em>456123<em>world</em>456</p>\n", markdown("123*Hello*456123*world*456"), "Emphasis Asterisk Pass")
-    assertHtmlEauql("<p>123<em>World</em>456123<em>world</em>456</p>\n", markdown("123_World_456123*world*456"), "Emphasis Underscope Pass")
+    assertHtmlEauql(@"<p><em>Hello</em></p>\n", markdown(@"*Hello*"));
+    assertHtmlEauql(@"<p><em>World</em></p>\n", markdown(@"_World_"));
+    assertHtmlEauql(@"<p>123<em>Hello</em>456</p>\n", markdown(@"123*Hello*456"));
+    assertHtmlEauql(@"<p>123<em>World</em>456</p>\n", markdown(@"123_World_456"));
+    assertHtmlEauql(@"<p>123<em>Hello</em>456123<em>world</em>456</p>\n", markdown(@"123*Hello*456123*world*456"));
+    assertHtmlEauql(@"<p>123<em>World</em>456123<em>world</em>456</p>\n", markdown(@"123_World_456123*world*456"));
 }
 
 - (void) testBulletList
 {
-    let input = "A bulleted list:\n- a\n- b\n- c\n"
-    let expected = "<p>A bulleted list:<br/><ul><li>a</li><li>b</li><li>c</li></ul></p>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+    let input = @"A bulleted list:\n- a\n- b\n- c\n";
+    let expected = @"<p>A bulleted list:<br/><ul><li>a</li><li>b</li><li>c</li></ul></p>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
 
@@ -154,26 +154,26 @@ void assertHtmlEauql(NSString* expected,NSString* actual){
 
 - (void) testHTMLTag{
     
-    let input = "<a name=\"html\"/>"
-    let expected = "<a name=\"html\"/>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+    let input = @"<a name=\"html\"/>";
+    let expected = @"<a name=\"html\"/>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
 - (void) testMixedHTMLTag{
     
-    let input = "<a name=\"html\"/>\n## Inline HTML\nYou can also use raw HTML in your Markdown"
-    let expected = "<a name=\"html\"/><h2>Inline HTML</h2><p>You can also use raw HTML in your Markdown</p>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+    let input = @"<a name=\"html\"/>\n## Inline HTML\nYou can also use raw HTML in your Markdown";
+    let expected = @"<a name=\"html\"/><h2>Inline HTML</h2><p>You can also use raw HTML in your Markdown</p>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
 - (void) testHTMLTag2{
     
-    let input = "111<a href='abc'>123</a>222"
-    let expected = "<p>111</p><a href='abc'>123</a><p>222</p>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+    let input = @"111<a href='abc'>123</a>222";
+    let expected = @"<p>111</p><a href='abc'>123</a><p>222</p>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
  }
  
 
