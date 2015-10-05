@@ -2,7 +2,7 @@
 //  ReferenceUsageInfo.h
 //  MarkNoteParserOC
 //
-//  Created by bill on 5/10/15.
+//  Created by marknote on 5/10/15.
 //  Copyright © 2015 marknote. All rights reserved.
 //
 

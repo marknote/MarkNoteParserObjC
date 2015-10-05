@@ -2,13 +2,16 @@
 //  MarkNoteParserOCTests.m
 //  MarkNoteParserOCTests
 //
-//  Created by bill on 4/10/15.
+//  Created by marknote on 4/10/15.
 //  Copyright © 2015 marknote. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
 #import "MarkNoteParser.h"
+
+#define let NSString*
+
 
 @interface MarkNoteParserOCTests : XCTestCase
 - (void) htmlEquals:(NSString*) expected actual:(NSString*) actual;
@@ -47,93 +50,89 @@ void assertHtmlEauql(NSString* expected,NSString* actual){
 }
 
 
-/*
 
 
 
 
 
 
-func testHeading() {
-    assertHtmlEauql("<h1>Hello</h1>", markdown("# Hello"), "H1 Heading Pass")
-    assertHtmlEauql("<h2>Hello</h2>", markdown("## Hello"), "H2 Heading Pass")
-    assertHtmlEauql("<h3>Hello</h3>", markdown("### Hello"), "H3 Heading Pass")
-    assertHtmlEauql("<h4>Hello</h4>", markdown("#### Hello"), "H4 Heading Pass")
-    assertHtmlEauql("<h5>Hello</h5>", markdown("##### Hello"), "H5 Heading Pass")
-    assertHtmlEauql("<h6>Hello</h6>", markdown("###### Hello"), "H6 Heading Pass")
+
+- (void) testHeading {
+    assertHtmlEauql(@"<h1>Hello</h1>", markdown(@"# Hello"));
+    assertHtmlEauql(@"<h2>Hello</h2>", markdown(@"## Hello"));
+    assertHtmlEauql(@"<h3>Hello</h3>", markdown(@"### Hello"));
+    assertHtmlEauql(@"<h4>Hello</h4>", markdown(@"#### Hello"));
+    assertHtmlEauql(@"<h5>Hello</h5>", markdown(@"##### Hello"));
+    assertHtmlEauql(@"<h6>Hello</h6>", markdown(@"###### Hello"));
 }
 
 
-func testFencedCode() {
-    assertHtmlEauql("<pre class=\"prettyprint lang-swift\">println(&quot;Hello&quot;)\n</pre>\n", markdown("```swift\nprintln(\"Hello\")\n```"), "Fenced Code Pass")
+- (void) testFencedCode {
+    assertHtmlEauql(@"<pre class=\"prettyprint lang-swift\">println(&quot;Hello&quot;)\n</pre>\n", markdown(@"```swift\nprintln(\"Hello\")\n```"));
 }
 
-func testDefLinks() {
-    assertHtmlEauql("<p><a href=\"www.google.com\">Title</a><br/><br/></p>", markdown("[Title][Google]\n [Google]:www.google.com\n"), "Deflink no title Pass")
-    assertHtmlEauql("<p><a href=\"www.google.com\" title=\"GoogleSearch\">text</a><br/><br/></p>", markdown("[text][Google]\n[Google]:www.google.com \"GoogleSearch\"\n"), "Deflink no title Pass")
+- (void) testDefLinks {
+    assertHtmlEauql(@"<p><a href=\"www.google.com\">Title</a><br/><br/></p>", markdown(@"[Title][Google]\n [Google]:www.google.com\n"));
+    assertHtmlEauql(@"<p><a href=\"www.google.com\" title=\"GoogleSearch\">text</a><br/><br/></p>", markdown(@"[text][Google]\n[Google]:www.google.com \"GoogleSearch\"\n"));
 }
 
-func testDefImages() {
-    assertHtmlEauql("<p><img src=\"aaa\" alt=\"Title\"/><br/><br/></p>", markdown("![Title][image]\n [image]:aaa\n"), "Deflink no title Pass")
-    assertHtmlEauql("<p><img src=\"aaa\" alt=\"text\" title=\"TTTT\"/><br/><br/></p>", markdown("![text][image]\n[image]:aaa \"TTTT\"\n"), "Deflink no title Pass")
-    assertHtmlEauql("<p><img src=\"https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png\" alt=\"alt text\" title=\"Logo Title Text\"/><br/></p>", markdown("![alt text][logo]\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text\""), "Deflink no title Pass")
+- (void) testDefImages {
+    assertHtmlEauql(@"<p><img src=\"aaa\" alt=\"Title\"/><br/><br/></p>", markdown(@"![Title][image]\n [image]:aaa\n"));
+    assertHtmlEauql(@"<p><img src=\"aaa\" alt=\"text\" title=\"TTTT\"/><br/><br/></p>", markdown(@"![text][image]\n[image]:aaa \"TTTT\"\n"));
+    assertHtmlEauql(@"<p><img src=\"https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png\" alt=\"alt text\" title=\"Logo Title Text\"/><br/></p>", markdown(@"![alt text][logo]\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text\""));
 }
 
 
 
-func testInlineLinks() {
-    assertHtmlEauql("<p><a href=\"www.google.com\">Google</a></p>\n", markdown("[Google](www.google.com)"), "inline link Pass")
-    assertHtmlEauql("<p><a href=\"www.google.com\" title=\"googlehome\">Google</a></p>\n", markdown("[Google](www.google.com \"googlehome\")"), "inline link Pass")
+- (void) testInlineLinks {
+    assertHtmlEauql(@"<p><a href=\"www.google.com\">Google</a></p>\n", markdown(@"[Google](www.google.com)"));
+    assertHtmlEauql(@"<p><a href=\"www.google.com\" title=\"googlehome\">Google</a></p>\n", markdown(@"[Google](www.google.com \"googlehome\")"));
     
 }
 
-func testInlineImages() {
-    assertHtmlEauql("<p><img src=\"url\" alt=\"abc\" /></p>\n", markdown("![abc](url)"), "inline image Pass")
+- (void)testInlineImages {
+    assertHtmlEauql(@"<p><img src=\"url\" alt=\"abc\" /></p>\n", markdown(@"![abc](url)"));
     
 }
 
-func testInlineImages2() {
-    assertHtmlEauql("<p>!<img src=\"url\" alt=\"abc\" /></p>\n", markdown("!![abc](url)"), "inline image Pass")
+- (void) testInlineImages2 {
+    assertHtmlEauql(@"<p>!<img src=\"url\" alt=\"abc\" /></p>\n", markdown(@"!![abc](url)"));
     
 }
-
-func testHRule() {
-    assertHtmlEauql("<hr>\n", markdown("-----"), "HRule dashes Pass")
-    assertHtmlEauql("<hr>\n", markdown("***"), "HRule asterisks Pass")
-    assertHtmlEauql("<hr>\n", markdown("___"), "HRule underscope Pass")
+- (void) testHRule {
+    assertHtmlEauql(@"<hr>\n", markdown(@"-----"));
+    assertHtmlEauql(@"<hr>\n", markdown(@"***"));
+    assertHtmlEauql(@"<hr>\n", markdown(@"___"));
+}
+- (void) testLHeading {
+    assertHtmlEauql(@"<h1>Hello</h1>\n", markdown(@"Hello\n====="));
+    assertHtmlEauql(@"<h2>Hello</h2>\n", markdown(@"Hello\n-----"));
 }
 
-func testLHeading() {
-    assertHtmlEauql("<h1>Hello</h1>\n", markdown("Hello\n====="), "H1 LHeading Pass")
-    assertHtmlEauql("<h2>Hello</h2>\n", markdown("Hello\n-----"), "H2 LHeading Pass")
+- (void) testBlockQuote {
+    assertHtmlEauql(@"<blockquote><h3>Hello</h3></blockquote>", markdown(@">### Hello"));
 }
 
-func testBlockQuote() {
-    assertHtmlEauql("<blockquote><h3>Hello</h3></blockquote>", markdown(">### Hello"), "HRule dashes Pass")
+- (void)testInlineCode {
+    assertHtmlEauql(@"<p><code>Hello</code></p>\n", markdown(@"`Hello`\n"));
 }
 
-func testInlineCode() {
-    assertHtmlEauql("<p><code>Hello</code></p>\n", markdown("`Hello`\n"), "InlineCode Pass")
+- (void)testBlockCode {
+    assertHtmlEauql(@"<pre class=\"no-highlight\">\nHello\n</pre>\n", markdown(@"``` \r\nHello\r\n```\n"));
 }
 
-func testBlockCode() {
-    assertHtmlEauql("<pre class=\"no-highlight\">\nHello\n</pre>\n", markdown("``` \r\nHello\r\n```\n"), "BlockCode Pass")
-}
-
-func testDoubleEmphasis() {
-    assertHtmlEauql("<p><strong>Hello</strong></p>\n", markdown("**Hello**"), "Double Emphasis Asterisk Pass")
-    assertHtmlEauql("<p><strong>World</strong></p>\n", markdown("__World__"), "Double Emphasis Underscope Pass")
-    assertHtmlEauql("<p><del>Hello</del></p>\n", markdown("~~Hello~~"), "Double Emphasis Asterisk Pass")
+- (void) testDoubleEmphasis{
+    assertHtmlEauql(@"<p><strong>Hello</strong></p>\n", markdown(@"**Hello**"));
+    assertHtmlEauql(@"<p><strong>World</strong></p>\n", markdown(@"__World__"));
+    assertHtmlEauql(@"<p><del>Hello</del></p>\n", markdown(@"~~Hello~~"));
     
 }
-
-func testDoubleEmphasis2() {
-    assertHtmlEauql("<p>123<strong>Hello</strong>456</p>\n", markdown("123**Hello**456"), "Double Emphasis Asterisk Pass")
-    assertHtmlEauql("<p>123<strong>World</strong>456</p>\n", markdown("123__World__456"), "Double Emphasis Underscope Pass")
+- (void) testDoubleEmphasis2 {
+    assertHtmlEauql(@"<p>123<strong>Hello</strong>456</p>\n", markdown(@"123**Hello**456"));
+    assertHtmlEauql(@"<p>123<strong>World</strong>456</p>\n", markdown(@"123__World__456"));
 }
 
-
-func testEmphasis() {
+- (void)testEmphasis {
     assertHtmlEauql("<p><em>Hello</em></p>\n", markdown("*Hello*"), "Emphasis Asterisk Pass")
     assertHtmlEauql("<p><em>World</em></p>\n", markdown("_World_"), "Emphasis Underscope Pass")
     assertHtmlEauql("<p>123<em>Hello</em>456</p>\n", markdown("123*Hello*456"), "Emphasis Asterisk Pass")
@@ -142,7 +141,7 @@ func testEmphasis() {
     assertHtmlEauql("<p>123<em>World</em>456123<em>world</em>456</p>\n", markdown("123_World_456123*world*456"), "Emphasis Underscope Pass")
 }
 
-func testBulletList()
+- (void) testBulletList
 {
     let input = "A bulleted list:\n- a\n- b\n- c\n"
     let expected = "<p>A bulleted list:<br/><ul><li>a</li><li>b</li><li>c</li></ul></p>"
@@ -153,7 +152,7 @@ func testBulletList()
 
 
 
-func testHTMLTag(){
+- (void) testHTMLTag{
     
     let input = "<a name=\"html\"/>"
     let expected = "<a name=\"html\"/>"
@@ -161,7 +160,7 @@ func testHTMLTag(){
     assertHtmlEauql(expected, actual)
 }
 
-func testMixedHTMLTag(){
+- (void) testMixedHTMLTag{
     
     let input = "<a name=\"html\"/>\n## Inline HTML\nYou can also use raw HTML in your Markdown"
     let expected = "<a name=\"html\"/><h2>Inline HTML</h2><p>You can also use raw HTML in your Markdown</p>"
@@ -169,48 +168,49 @@ func testMixedHTMLTag(){
     assertHtmlEauql(expected, actual)
 }
 
-func testHTMLTag2(){
+- (void) testHTMLTag2{
     
     let input = "111<a href='abc'>123</a>222"
     let expected = "<p>111</p><a href='abc'>123</a><p>222</p>"
     let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
     assertHtmlEauql(expected, actual)
-}
+ }
+ 
 
-func testEmbeddedHTML(){
-    let input = "<span style='color:red'>Don't modify this note. Your changes will be overrided.</span>"
-    let expected = "<span style='color:red'>Don't modify this note. Your changes will be overrided.</span>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+- (void) testEmbeddedHTML{
+    let input = @"<span style='color:red'>Don't modify this note. Your changes will be overrided.</span>";
+    let expected = @"<span style='color:red'>Don't modify this note. Your changes will be overrided.</span>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
     
 }
 
-func testHTMLInCode(){
+- (void) testHTMLInCode{
     
-    let input = "```\n&lt;html&gt;\n```\n"
-    let expected = "<pre class=\"no-highlight\">&lt;html&gt;</pre>"
-    let actual = markdown(input).stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    assertHtmlEauql(expected, actual)
+    let input = @"```\n&lt;html&gt;\n```\n";
+    let expected = @"<pre class=\"no-highlight\">&lt;html&gt;</pre>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
-func testNewLine(){
+- (void) testNewLine{
     
-    let input = "abc  \n123"
-    let expected = "<p>abc<br/>123</p>"
-    let actual = markdown(input)
-    assertHtmlEauql(expected, actual)
-}
-
-func testTable(){
-    
-    let input = "|a|b|c|\n|------|-----|-----|\n|1|2|3|\n\n\n"
-    let expected = "<table><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>"
-    let actual = markdown(input)
-    assertHtmlEauql(expected, actual)
+    let input = @"abc  \n123";
+    let expected = @"<p>abc<br/>123</p>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
 
- */
+
+
+- (void) testTable{
+    
+    let input = @"|a|b|c|\n|------|-----|-----|\n|1|2|3|\n\n\n";
+    let expected = @"<table><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>";
+    let actual = markdown(input);
+    assertHtmlEauql(expected, actual);
+}
 
 - (void) testTableWithoutOuterPipe{
     
