@@ -113,7 +113,7 @@ const unichar headerChar = '#';
                         left = [left substringFromIndex: endTag + 1 ];
                         endTag = [left indexOf:@">"];
                         if (endTag !=NSNotFound ){
-                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin, tagBegin + currentPos + 2)]];
+                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin,  currentPos + 2)]];
                                                   //substring(tagBegin, end: tagBegin + endTag + currentPos + 1) //+
                             if (endTag < left.length - 1) {
                                 left = [left substringFromIndex:endTag + 1 ];
@@ -143,10 +143,6 @@ const unichar headerChar = '#';
     NSString* preProceeded = [input stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
     preProceeded = [preProceeded stringByReplacingOccurrencesOfString:@"\n" withString:@"  \n"];
     
-    //replaceAll("\r\n", toStr: "\n").replaceAll("\n", toStr:"  \n")
-    
-    
-    //let lines = split(preProceeded){$0 == "\n"}
     NSArray<NSString*>* lines = [preProceeded componentsSeparatedByString:@"\n" ];
     BOOL isInCodeBlock = false;
     
@@ -432,8 +428,8 @@ const unichar headerChar = '#';
     if (nFindHead > 0) {
         isCurrentLineNeedBr = false;
         
-        [output appendString:@"<h\(nFindHead)>"];
-        [endTags addObject:@"</h\(nFindHead)>"];
+        [output appendFormat:@"<h%d>",nFindHead];
+        [endTags addObject: [NSString stringWithFormat: @"</h%d>",nFindHead]];
         pos += nFindHead;
     } else {
         [self beginParagraph];
@@ -462,12 +458,15 @@ const unichar headerChar = '#';
     
     for(NSString* col in cols) {
         NSString* colAlign = tableColsAlignment[i];
+        
         if (isHead) {
-            [output appendString: colAlign.length > 0 ? @"<th \(colAlign)>" : @"<th>"];
+            NSString* colAlighStr = [NSString stringWithFormat:@"<th %@>",colAlign ];
+            [output appendString: colAlign.length > 0 ? colAlighStr : @"<th>"];
             [self parseInLine:col];
             [output appendString:@"</th>"];
         } else {
-            [output appendString:colAlign.length > 0 ? @"<td \(colAlign)>" : @"<td>"];
+            NSString* colAlighStr = [NSString stringWithFormat:@"<td %@>",colAlign ];
+            [output appendString:colAlign.length > 0 ? colAlighStr : @"<td>"];
             [self parseInLine:col];
 
             [output appendString:@"</td>"];
