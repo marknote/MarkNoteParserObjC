@@ -15,6 +15,8 @@ typedef enum {Link, Image} ReferenceType;
 @property (nonatomic,strong) NSString* url;
 @property (nonatomic,strong) NSString* title;
 
+-(id)initWithString:(NSString*) surl;
+
 @end
 
 

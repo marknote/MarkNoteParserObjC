@@ -69,11 +69,11 @@ const unichar headerChar = '#';
                 }
             case Image:
                 if (found.url.title.length > 0){
-                    actual = [NSString stringWithFormat: @"img src=\"%@\" alt=\"%@\" title=\"%@\"/>",found.url.url,refer.title,found.url.title];
+                    actual = [NSString stringWithFormat: @"<img src=\"%@\" alt=\"%@\" title=\"%@\"/>",found.url.url,refer.title,found.url.title];
                     
                     
                 } else {
-                    actual = [NSString stringWithFormat: @"img src=\"%@\" alt=\"%@\" />",found.url.url,refer.title];
+                    actual = [NSString stringWithFormat: @"<img src=\"%@\" alt=\"%@\"/>",found.url.url,refer.title];
                   
                 }
             }
@@ -113,7 +113,7 @@ const unichar headerChar = '#';
                         left = [left substringFromIndex: endTag + 1 ];
                         endTag = [left indexOf:@">"];
                         if (endTag !=NSNotFound ){
-                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin,  currentPos + 2)]];
+                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin, endTag + currentPos + 2)]];
                                                   //substring(tagBegin, end: tagBegin + endTag + currentPos + 1) //+
                             if (endTag < left.length - 1) {
                                 left = [left substringFromIndex:endTag + 1 ];
@@ -315,7 +315,7 @@ const unichar headerChar = '#';
                 NSArray<NSNumber*>* posArray = [MarkNoteParser detectPositions:@[@"]",@"(",@")"] inStr: remaining];
                 if (posArray.count == 3) {
                     ImageTag* img = [[ImageTag alloc] init];
-                    img.alt = [line substringWithRange:NSMakeRange(i + 1,  posArray[0].intValue - 1 )];
+                    img.alt = [line substringWithRange:NSMakeRange(i + 1,  posArray[0].intValue  )];
                     URLTag* urlTag = [[URLTag alloc]init];
                     urlTag.url = [line substringWithRange:NSMakeRange(i + 1 + posArray[1].intValue + 1,    posArray[2].intValue - posArray[1].intValue -1)];
                     //line.substring( i + 1 + posArray[1] + 1, end: i + 1 + posArray[2] - 1)
@@ -354,8 +354,9 @@ const unichar headerChar = '#';
                 LinkTag* link = [[LinkTag alloc] init];
                 link.text = [line substringWithRange:NSMakeRange(i + 1, posArray[0].intValue) ];
                 //.substring(i + 1, end: i + 1 + posArray[0] - 1)
-                URLTag* urlTag = [[URLTag alloc] init];
-                urlTag.url = [line substringWithRange: NSMakeRange(i + 1 + posArray[1].intValue + 1, posArray[2].intValue - posArray[1].intValue )];
+                NSString* surl = [line substringWithRange: NSMakeRange(i + 1 + posArray[1].intValue + 1, posArray[2].intValue - posArray[1].intValue - 1 )];
+                URLTag* urlTag = [[URLTag alloc] initWithString:surl];
+                
                 link.url =  urlTag;
                 [output appendString: [link toHtml] ];
                 i +=  posArray[2].intValue + 1;
@@ -368,8 +369,9 @@ const unichar headerChar = '#';
                     info.key = [remaining substringToIndex:pos];
                     //.substringToIndex(remaining.startIndex.advancedBy( pos ))
                     NSString* remaining2 = [remaining substringFromIndex: pos + @"]:".length ];
-                    URLTag* urlTag = [[URLTag alloc] init];
-                    urlTag.url = remaining2;
+                    URLTag* urlTag = [[URLTag alloc] initWithString:remaining2];
+                    info.url = urlTag;
+               
                     [arrReferenceInfo addObject:info];
                     i += pos + @"]:".length + remaining2.length;
                 } else {
@@ -451,7 +453,13 @@ const unichar headerChar = '#';
 
 
 -(void) handleTableLine:(NSString*)rawline isHead:(BOOL)isHead {
-    NSArray* cols = [rawline componentsSeparatedByString:@"|"];
+    if ([rawline characterAtIndex:rawline.length-1] == '|'){
+        rawline = [rawline substringToIndex:rawline.length-1];
+    }
+    if ([rawline characterAtIndex:0] == '|'){
+        rawline = [rawline substringFromIndex:1];
+    }
+    NSArray* cols = [rawline  componentsSeparatedByString:@"|"];
     
     [output appendString:@"<tr>"];
     int i = 0;
