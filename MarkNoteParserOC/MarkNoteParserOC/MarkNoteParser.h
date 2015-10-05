@@ -7,11 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "URLTag.h"
 
-typedef enum {Link, Image} ReferenceType;
+
 
 
 
 @interface MarkNoteParser : NSObject
+
++(NSArray<NSString*>*)detectPositions:(NSArray<NSString *> *)toFind inStr:(NSString* )inStr;
 
 @end

@@ -18,6 +18,10 @@
 		A944C1211BC17DCB005495AF /* URLTag.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1201BC17DCB005495AF /* URLTag.m */; settings = {ASSET_TAGS = (); }; };
 		A944C1241BC18079005495AF /* NSString+Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1231BC18079005495AF /* NSString+Addition.m */; settings = {ASSET_TAGS = (); }; };
 		A944C1261BC181AE005495AF /* NSStringAdditionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1251BC181AE005495AF /* NSStringAdditionTests.m */; settings = {ASSET_TAGS = (); }; };
+		A944C12B1BC1F529005495AF /* LinkTag.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C12A1BC1F529005495AF /* LinkTag.m */; settings = {ASSET_TAGS = (); }; };
+		A944C12E1BC1F58D005495AF /* ImageTag.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C12D1BC1F58D005495AF /* ImageTag.m */; settings = {ASSET_TAGS = (); }; };
+		A944C1311BC1F723005495AF /* ReferenceDefinition.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1301BC1F723005495AF /* ReferenceDefinition.m */; settings = {ASSET_TAGS = (); }; };
+		A944C1341BC1F772005495AF /* ReferenceUsageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A944C1331BC1F772005495AF /* ReferenceUsageInfo.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,14 @@
 		A944C1221BC18079005495AF /* NSString+Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Addition.h"; sourceTree = "<group>"; };
 		A944C1231BC18079005495AF /* NSString+Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Addition.m"; sourceTree = "<group>"; };
 		A944C1251BC181AE005495AF /* NSStringAdditionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringAdditionTests.m; sourceTree = "<group>"; };
+		A944C1291BC1F529005495AF /* LinkTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkTag.h; sourceTree = "<group>"; };
+		A944C12A1BC1F529005495AF /* LinkTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkTag.m; sourceTree = "<group>"; };
+		A944C12C1BC1F58D005495AF /* ImageTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageTag.h; sourceTree = "<group>"; };
+		A944C12D1BC1F58D005495AF /* ImageTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageTag.m; sourceTree = "<group>"; };
+		A944C12F1BC1F723005495AF /* ReferenceDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceDefinition.h; sourceTree = "<group>"; };
+		A944C1301BC1F723005495AF /* ReferenceDefinition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferenceDefinition.m; sourceTree = "<group>"; };
+		A944C1321BC1F772005495AF /* ReferenceUsageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceUsageInfo.h; sourceTree = "<group>"; };
+		A944C1331BC1F772005495AF /* ReferenceUsageInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferenceUsageInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +104,8 @@
 		A944C0F61BC16615005495AF /* MarkNoteParserOC */ = {
 			isa = PBXGroup;
 			children = (
+				A944C1281BC1F0EB005495AF /* Categories */,
+				A944C1271BC1F0D6005495AF /* Model */,
 				A944C0FA1BC16615005495AF /* AppDelegate.h */,
 				A944C0FB1BC16615005495AF /* AppDelegate.m */,
 				A944C0FD1BC16615005495AF /* ViewController.h */,
@@ -101,12 +115,6 @@
 				A944C1051BC16615005495AF /* LaunchScreen.storyboard */,
 				A944C1081BC16615005495AF /* Info.plist */,
 				A944C0F71BC16615005495AF /* Supporting Files */,
-				A944C11C1BC17AF0005495AF /* MarkNoteParser.h */,
-				A944C11D1BC17AF0005495AF /* MarkNoteParser.m */,
-				A944C11F1BC17DCB005495AF /* URLTag.h */,
-				A944C1201BC17DCB005495AF /* URLTag.m */,
-				A944C1221BC18079005495AF /* NSString+Addition.h */,
-				A944C1231BC18079005495AF /* NSString+Addition.m */,
 			);
 			path = MarkNoteParserOC;
 			sourceTree = "<group>";
@@ -127,6 +135,34 @@
 				A944C1251BC181AE005495AF /* NSStringAdditionTests.m */,
 			);
 			path = MarkNoteParserOCTests;
+			sourceTree = "<group>";
+		};
+		A944C1271BC1F0D6005495AF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A944C11C1BC17AF0005495AF /* MarkNoteParser.h */,
+				A944C11D1BC17AF0005495AF /* MarkNoteParser.m */,
+				A944C11F1BC17DCB005495AF /* URLTag.h */,
+				A944C1201BC17DCB005495AF /* URLTag.m */,
+				A944C1291BC1F529005495AF /* LinkTag.h */,
+				A944C12A1BC1F529005495AF /* LinkTag.m */,
+				A944C12C1BC1F58D005495AF /* ImageTag.h */,
+				A944C12D1BC1F58D005495AF /* ImageTag.m */,
+				A944C12F1BC1F723005495AF /* ReferenceDefinition.h */,
+				A944C1301BC1F723005495AF /* ReferenceDefinition.m */,
+				A944C1321BC1F772005495AF /* ReferenceUsageInfo.h */,
+				A944C1331BC1F772005495AF /* ReferenceUsageInfo.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A944C1281BC1F0EB005495AF /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				A944C1221BC18079005495AF /* NSString+Addition.h */,
+				A944C1231BC18079005495AF /* NSString+Addition.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,11 +265,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A944C12B1BC1F529005495AF /* LinkTag.m in Sources */,
 				A944C0FF1BC16615005495AF /* ViewController.m in Sources */,
 				A944C1241BC18079005495AF /* NSString+Addition.m in Sources */,
 				A944C11E1BC17AF0005495AF /* MarkNoteParser.m in Sources */,
+				A944C12E1BC1F58D005495AF /* ImageTag.m in Sources */,
+				A944C1341BC1F772005495AF /* ReferenceUsageInfo.m in Sources */,
 				A944C1211BC17DCB005495AF /* URLTag.m in Sources */,
 				A944C0FC1BC16615005495AF /* AppDelegate.m in Sources */,
+				A944C1311BC1F723005495AF /* ReferenceDefinition.m in Sources */,
 				A944C0F91BC16615005495AF /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,6 +11,7 @@
 @interface NSString(Addition)
 
 -(NSString*)trim;
+-(NSUInteger) indexOf:(NSString*) toFind;
 
 @end
 

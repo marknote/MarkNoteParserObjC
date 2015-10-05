@@ -17,4 +17,10 @@
     return trimmedString;
 }
 
+-(NSUInteger) indexOf:(NSString*) toFind{
+    return [self rangeOfString:toFind].location;
+}
+
+
+
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MarkNoteParser.h"
+#import "NSString+Addition.h"
 
 @implementation MarkNoteParser
 
@@ -459,29 +460,6 @@ func parseInLine(line: String) {
     }
 }
 
-public static func charArray(ch:Character, len:Int)->String{
-    var str = ""
-    for var i = 0 ; i < len ; i++ {
-        str.append(ch)
-    }
-    return str
-}
-
-public static func detectPositions(toFind:[String],inStr:String )->[Int]{
-    var posArray = [Int]()
-    let count = toFind.count
-    var lastPos = 0
-    for var i = 0; i < count ; i++ {
-        let pos = inStr.substringFromIndex(inStr.startIndex.advancedBy(  lastPos)).indexOf(toFind[i])
-        lastPos += pos
-        if pos >= 0 {
-            posArray.append(lastPos)
-        }else {
-            return posArray
-        }
-    }
-    return posArray
-}
 
 func  scanClosedChar(ch:String, inStr:String,tag:String) -> Int {
     let pos = inStr.indexOf(ch)
@@ -492,79 +470,40 @@ func  scanClosedChar(ch:String, inStr:String,tag:String) -> Int {
     }
     return pos + ch.length
 }
-public class func splitStringWithMidSpace(input: String) -> [String]{
-    var array = [String]()
-    let trimmed = input.trim()
-    let pos = trimmed.indexOf(" ")
-    if pos > 0 {
-        array.append(trimmed.substringToIndex(trimmed.startIndex.advancedBy( pos)))
-        array.append(trimmed.substringFromIndex(trimmed.startIndex.advancedBy( pos + 1)))
-    } else {
-        array.append(trimmed)
-    }
-    return array
-}
-
-}
 
 
-class URLTag: NSObject {
-    var _url = ""
-    var _title = ""
-    init(url:String){
-        let trimmed = url.trim()
-        //let posSpace = trimmed.indexOf(" ")
-        let arr = MarkNoteParser.splitStringWithMidSpace(trimmed)
-        if arr.count > 1 {
-            _url = arr[0].lowercaseString
-            _title = arr[1].replaceAll("\"", toStr: "")
-        } else {
-            _url = arr[0].lowercaseString
-        }
-        
-    }
-    override var description: String {
-        return _url
-    }
-}
 
-class LinkTag {
-    var text = ""
-    var url = URLTag(url:"")
-    func toHtml()-> String{
-        if url._title.length > 0 {
-            return "<a href=\"\(url._url)\" title=\"\(url._title)\">" + text + "</a>"
-        } else {
-            return "<a href=\"\(url._url)\">" + text + "</a>"
-        }
-    }
-}
 
-class ImageTag{
-    
-    var alt = ""
-    var url = URLTag(url:"")
-    func toHtml()-> String{
-        if url._title.length > 0 {
-            return "<img=\"\(url._url)\" alt=\"\(alt)\" title=\"\(url._title)\" />"
-        } else {
-            return "<img src=\"\(url._url)\" alt=\"\(alt)\" />"
-        }
-    }
-}
 
-class ReferenceDefinition {
-    var key = ""
-    var url = URLTag(url:"")
-}
-class ReferenceUsageInfo{
-    var title = ""
-    var key = ""
-    var type = ReferenceType.Link
-    func placeHolder() -> String{
-        return "ReferenceUsageInfo\(key)\(title)"
-    }
-}
 */
+
++(NSString*)  charArray:(NSString*)ch len:(int)len{
+    NSMutableString* sb = [[NSMutableString alloc] init];
+    for (int i = 0 ; i < len ; i++) {
+        [sb appendString:ch];
+    }
+    NSString* result = [NSString stringWithString:sb];
+    return result;
+}
+
++(NSArray<NSString*>*)detectPositions:(NSArray<NSString *> *)toFind inStr:(NSString* )inStr{
+    NSMutableArray* posArray = [NSMutableArray array];// [Int]()
+    NSUInteger count = toFind.count;
+    int lastPos = 0;
+    for (int i = 0; i < count ; i++){
+        NSUInteger pos = [[inStr substringFromIndex:lastPos] indexOf:toFind[i]];
+        
+        if (pos != NSNotFound) {
+            lastPos += pos;
+            [posArray addObject:[NSString stringWithFormat:@"%d",lastPos] ];
+           // [posArray append:lastPos];
+        }else {
+            return posArray;
+        }
+    }
+    return posArray;
+}
+
+
 
 @end

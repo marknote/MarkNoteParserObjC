@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 
+#import "MarkNoteParser.h"
+
 @interface MarkNoteParserOCTests : XCTestCase
 
 @end
@@ -137,19 +139,7 @@ func testBulletList()
 }
 
 
-func testDetectPositions() {
-    let expected = [1,2,3]
-    let actual = MarkNoteParser.detectPositions(["1","2","3"],inStr:"0123")
-    XCTAssertEqual(expected, actual)
-    
-}
 
-func testDetectPositions2() {
-    let expected = [2,4,5]
-    let actual = MarkNoteParser.detectPositions(["2","4","5"],inStr:"012345")
-    XCTAssertEqual(expected, actual)
-    
-}
 
 func testHTMLTag(){
     
@@ -225,6 +215,23 @@ func testTableWithColumnAignment(){
 
 
 */
+
+
+- (void) testDetectPositions {
+    NSArray<NSString*>* expected = @[@"1",@"2",@"3"];
+    NSArray<NSString*>* actual = [MarkNoteParser detectPositions:@[@"1",@"2",@"3"] inStr:@"0123"];
+    XCTAssertEqualObjects(expected, actual);
+    
+}
+
+- (void)testDetectPositions2{
+    
+    NSArray<NSString*>* expected = @[@"2",@"4",@"5"];
+    NSArray<NSString*>* actual = [MarkNoteParser detectPositions:@[@"2",@"4",@"5"] inStr:@"012345"];
+    XCTAssertEqualObjects(expected, actual);
+    
+    
+}
 
 
 
