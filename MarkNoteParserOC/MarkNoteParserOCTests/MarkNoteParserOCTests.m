@@ -77,7 +77,7 @@ NSString* markdown(NSString* input){
 - (void) testDefImages {
     [self assertHtmlEauql:@"<p><img src=\"aaa\" alt=\"Title\"/><br/><br/></p>"actual: markdown(@"![Title][image]\n [image]:aaa\n")];
     [self assertHtmlEauql:@"<p><img src=\"aaa\" alt=\"text\" title=\"TTTT\"/><br/><br/></p>" actual: markdown(@"![text][image]\n[image]:aaa \"TTTT\"\n")];
-    [self assertHtmlEauql:@"<p><img src=\"https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png\" alt=\"alt text\" title=\"Logo Title Text\"/><br/></p>" actual: markdown(@"![alt text][logo]\n[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text\"")];
+    [self assertHtmlEauql:@"<p><img src=\"icon48.png\" alt=\"alt text\" title=\"Logo Title Text\"/><br/></p>" actual: markdown(@"![alt text][logo]\n[logo]: icon48.png \"Logo Title Text\"")];
 }
 
 

@@ -54,7 +54,7 @@ const unichar headerChar = '#';
 -(void) proceedReference{
     for (ReferenceUsageInfo* refer in arrReferenceUsage) {
         NSPredicate *predicte = [NSPredicate predicateWithFormat:
-                                 @"key like %@", refer.key.lowercaseString];
+                                 @"key like [c] %@", refer.key.lowercaseString];
         NSArray* hitted = [arrReferenceInfo filteredArrayUsingPredicate:predicte];
         if (hitted.count > 0) {
             ReferenceDefinition* found = hitted[0];
@@ -67,6 +67,7 @@ const unichar headerChar = '#';
                     actual = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>",found.url.url,refer.title];
                    
                 }
+                    break;
             case Image:
                 if (found.url.title.length > 0){
                     actual = [NSString stringWithFormat: @"<img src=\"%@\" alt=\"%@\" title=\"%@\"/>",found.url.url,refer.title,found.url.title];
@@ -76,6 +77,7 @@ const unichar headerChar = '#';
                     actual = [NSString stringWithFormat: @"<img src=\"%@\" alt=\"%@\"/>",found.url.url,refer.title];
                   
                 }
+                    break;
             }
             output = [NSMutableString stringWithString:  [output stringByReplacingOccurrencesOfString:[refer placeHolder] withString:actual]];
             
@@ -381,7 +383,7 @@ const unichar headerChar = '#';
                         //is reference usage
                         NSString* title = [line substringWithRange:NSMakeRange(i + 1, posArray2[0].intValue)];
                        
-                        NSString* url = [line substringWithRange:NSMakeRange(i + 1 + posArray2[1].intValue + 1, posArray2[2].intValue - posArray2[1].intValue )];
+                        NSString* url = [line substringWithRange:NSMakeRange(i + 1 + posArray2[1].intValue + 1, posArray2[2].intValue - posArray2[1].intValue -1 )];
                         
                         ReferenceUsageInfo* refer = [ReferenceUsageInfo new];
                         refer.type = Link;
