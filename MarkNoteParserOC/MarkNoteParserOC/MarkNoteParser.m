@@ -267,7 +267,7 @@ const unichar headerChar = '#';
 
 -(void) parseInLine:(NSString*)line {
     int len = (int)line.length;
-    int start = 0;
+    //int start = 0;
     for (int i = 0; i < len ; i++) {
         unichar ch = [line characterAtIndex:i];
         
