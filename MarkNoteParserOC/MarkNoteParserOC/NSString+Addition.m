@@ -21,6 +21,12 @@
     return [self rangeOfString:toFind].location;
 }
 
+-(BOOL) contains3PlusandOnlyChars:(NSString*) ch{
+    return (self.length >= 3
+    && [self indexOf:ch] == 0
+            && [self stringByReplacingOccurrencesOfString:ch withString:@""].length == 0);
+}
+
 
 
 @end

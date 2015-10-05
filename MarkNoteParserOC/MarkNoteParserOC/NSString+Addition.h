@@ -12,6 +12,7 @@
 
 -(NSString*)trim;
 -(NSUInteger) indexOf:(NSString*) toFind;
+-(BOOL) contains3PlusandOnlyChars:(NSString*) ch;
 
 @end
 

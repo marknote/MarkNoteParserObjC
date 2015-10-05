@@ -9,485 +9,565 @@
 #import "MarkNoteParser.h"
 #import "NSString+Addition.h"
 
+const unichar headerChar = '#';
+
+
+
 @implementation MarkNoteParser
+@synthesize outputString = output;
+
+-(id) init{
+    self = [super init];
+    
+    bInTable = false;
+    output = [NSMutableString stringWithCapacity:0];
+    isInParagraph = false;
+    isAfterEmptyLine = false;
+    tableColsAlignment = [NSMutableArray array];
+    blockEndTags = [NSMutableArray array];
+    isCurrentLineNeedBr = false;
+    arrReferenceInfo = [NSMutableArray array];
+    arrReferenceUsage = [NSMutableArray array];
+    return self;
+}
 
 //var nOldBulletLevel = 0
 /*var nCurrentBulletLevel = 0
-var bInTable = false
-var output = ""
-var isInParagraph = false
-var isAfterEmptyLine = false
-var tableColsAlignment = [String]()
-let headerChar:Character = "#"
-var blockEndTags = [String]()
-var isCurrentLineNeedBr = true
-var arrReferenceInfo = [ReferenceDefinition]()
-var arrReferenceUsage = [ReferenceUsageInfo]()
-
-public static func toHtml(input:String) -> String{
-    let instance = MarkNoteParser()
-    instance.output = ""
-    instance.parse(input)
-    return instance.output
-}
-
-
-func parse (input:String){
-    proceedHTMLTags(input)
-    proceedReference()
-}
-
-func proceedReference(){
-    for refer in self.arrReferenceUsage {
-        let hitted = arrReferenceInfo.filter{ $0.key.lowercaseString == refer.key.lowercaseString }
-        if hitted.count > 0 {
-            let found = hitted[0]
-            var actual = ""
-            switch refer.type {
-            case .Link:
-                if found.url._title.length > 0 {
-                    actual = "<a href=\"\(found.url)\" title=\"\(found.url._title)\">\(refer.title)</a>"
-                } else {
-                    actual = "<a href=\"\(found.url)\">\(refer.title)</a>"
-                }
-            case .Image:
-                if found.url._title.length > 0 {
-                    actual = "<img src=\"\(found.url)\" alt=\"\(refer.title)\" title=\"\(found.url._title)\"/>"
-                    
-                } else {
-                    actual = "<img src=\"\(found.url)\" alt=\"\(refer.title)\"/>"
-                }
-            }
-            output = output.replaceAll(refer.placeHolder(), toStr: actual)
-        }
-    }
-}
-
-
-func proceedHTMLTags(input:String){
-    var currentPos = 0
-    let tagBegin = input.indexOf("<")
-    if tagBegin >= 0 {
-        if tagBegin >= 1 {
-            proceedNoHtml(input.substring(currentPos, end: tagBegin - 1))
-        }
-        //currentPos = tagBegin
-        if tagBegin < input.length - 1 {
-            var left = input.substring(tagBegin, end: input.length - 1)
-            var endTag = left.indexOf(">")
-            if endTag > 0 {
-                // found
-                if left[endTag - 1] == "/" {
-                    //auto close: <XXX />
-                    self.output += left.substringToIndex(left.startIndex.advancedBy( endTag + 1))
-                    if endTag < left.length - 2 {
-                        proceedHTMLTags(left.substringFromIndex(left.startIndex.advancedBy( endTag + 1 )))
-                    }
-                } else {
-                    // there is a close tag
-                    currentPos = endTag
-                    if endTag <= left.length - 1 {
-                        left = left.substringFromIndex(left.startIndex.advancedBy( endTag + 1 ))
-                        endTag = left.indexOf(">")
-                        if endTag > 0 {
-                            self.output += input.substring(tagBegin, end: tagBegin + endTag + currentPos + 1) //+ left.substringToIndex(advance(left.startIndex,endTag ))
-                            if endTag < left.length - 1 {
-                                left = left.substringFromIndex(left.startIndex.advancedBy( endTag + 1 ))
-                                proceedHTMLTags(left)
-                                return
-                            }
-                        } else {
-                            proceedNoHtml(input)
-                            return
-                        }
-                    } else {
-                        output += input
-                        return
-                    }
-                }
-            }else {
-                // not found
-                proceedNoHtml(left)
-            }
-        }
-    }else {
-        proceedNoHtml(input)
-    }
-}
-func proceedNoHtml (input:String){
-    let preProceeded = input.replaceAll("\r\n", toStr: "\n").replaceAll("\n", toStr:"  \n")
-    
-    
-    //let lines = split(preProceeded){$0 == "\n"}
-    let lines = preProceeded.componentsSeparatedByString("\n")
-    var isInCodeBlock:Bool = false
-    
-    
-    //for rawline in lines {
-    for var i = 0; i < lines.count; i++ {
-        isCurrentLineNeedBr = true
-        
-        let line = lines[i].trim()
-        
-        if isInCodeBlock {
-            if line.indexOf("```") >= 0 {
-                isInCodeBlock = false
-                output += "</pre>\n"
-                isCurrentLineNeedBr = false
-                continue
-            }else {
-                output += line.replaceAll("\"", toStr:"&quot;") + "\n"
-            }
-        } else if bInTable && line.length > 0 {
-            handleTableLine(line, isHead:false)
-        } else {
-            // not in block
-            if  line.length == 0 {
-                // empty line
-                closeTags()
-                closeParagraph()
-                closeTable()
-                isAfterEmptyLine = true
-                isCurrentLineNeedBr = false
-                continue
-            }else {
-                isAfterEmptyLine = false
-            }
-            
-            if line.indexOf("- ") == 0
-                || line.indexOf("* ") == 0
-                || line.indexOf("+ ") == 0 {
-                    if self.nCurrentBulletLevel == 0 {
-                        output += "<ul>\n"
-                        blockEndTags.append("</ul>\n")
-                        self.nCurrentBulletLevel = 1
-                        isCurrentLineNeedBr = false
-                        
-                    }
-                    output += "<li>"
-                    let newline = line.substring("- ".length, end: line.length - 1)
-                    handleLine(newline)
-                    output += "</li>\n"
-                    continue
-                } else {
-                    if self.nCurrentBulletLevel > 0 {
-                        self.nCurrentBulletLevel = 0
-                        output += "</ul>\n"
-                    }
-                }
-            
-            if  line.indexOf("```") == 0 {
-                isInCodeBlock = true
-                var cssClass = "no-highlight"
-                if line.length > "```".length {
-                    //prettyprint javascript prettyprinted
-                    let remaining = line.substringFromIndex(line.startIndex.advancedBy(  "```".length))
-                    cssClass = "prettyprint lang-\(remaining)"
-                }
-                output += "<pre class=\"\(cssClass)\">\n"
-                continue // ignor current line
-            }
-            
-            if i + 1 <= lines.count - 1 {
-                let nextLine = lines[i + 1].trim()
-                if nextLine.contains3PlusandOnlyChars("="){
-                    output += "<h1>" + line + "</h1>\n"
-                    i++
-                    continue
-                } else if nextLine.contains3PlusandOnlyChars("-"){
-                    output += "<h2>" + line + "</h2>\n"
-                    i++
-                    continue
-                } else if  nextLine.indexOf("|") >= 0
-                    && line.indexOf("|") >= 0
-                    && nextLine.replaceAll("|", toStr: "").replaceAll("-", toStr: "").replaceAll(":", toStr: "").replaceAll(" ", toStr: "").length == 0
-                {
-                    
-                    beginTable(nextLine)
-                    handleTableLine(line, isHead:true)
-                    i++
-                    continue
-                }
-            }
-            
-            
-            handleLine(line)
-            if  isCurrentLineNeedBr
-                && lines[i].length >= 2
-                && lines[i].substringFromIndex(lines[i].startIndex.advancedBy( lines[i].length - 2)) == "  " {
-                    output += "<br/>"
-                }
-            
-            //output += "</p>"
-        }
-    }//end for
-    closeTags()
-    closeParagraph()
-    
-}
-
-func handleTableLine(rawline:String, isHead:Bool) {
-    
-    let cols = rawline.characters.split{$0 == "|"}.map { String($0) }
-    output += "<tr>"
-    var i = 0
-    
-    for col in cols {
-        let colAlign = self.tableColsAlignment[i]
-        if isHead {
-            output += colAlign.length > 0 ? "<th \(colAlign)>" : "<th>"
-            parseInLine(col)
-            output += "</th>"
-        } else {
-            output += colAlign.length > 0 ? "<td \(colAlign)>" : "<td>"
-            parseInLine(col)
-            output += "</td>"
-        }
-        i++
-    }
-    output += "</tr>"
-}
-
-func beginTable(alignmentLine: String){
-    if !bInTable {
-        bInTable = true
-        output += "<table>"
-        self.tableColsAlignment.removeAll(keepCapacity: false)
-        let arr = alignmentLine.trim().componentsSeparatedByString("|")
-        for col in arr {
-            if col.indexOf(":-") >= 0 && col.indexOf("-:") > 0 {
-                self.tableColsAlignment.append("style=\"text-align: center;\"")
-            }else if col.indexOf("-:") > 0{
-                self.tableColsAlignment.append("style=\"text-align: right;\"")
-            }else {
-                self.tableColsAlignment.append("")
-            }
-        }
-    }
-}
-func closeTable(){
-    if bInTable {
-        bInTable = false
-        output += "</table>"
-    }
-}
-func closeTags(){
-    for var i = blockEndTags.count - 1; i >= 0; i-- {
-        output += blockEndTags[i]
-        //blockEndTags.removeAtIndex(i)
-    }
-    blockEndTags.removeAll(keepCapacity: false)
-}
-
-func closeParagraph () {
-    if isInParagraph {
-        isInParagraph = false
-        output += "</p>\n"
-    }
-}
-
-func beginParagraph(){
-    if !isInParagraph {
-        isInParagraph = true
-        output += "<p>"
-    }
-}
-
-
-
-func calculateHeadLevel(line:String)->Int{
-    var nFindHead = 0
-    var pos: String.Index = line.startIndex
-    for var i = 0; i <= 6 && i < line.characters.count; i++ {
-        pos = line.startIndex.advancedBy( i)
-        if line[pos] == headerChar  {
-            nFindHead = i + 1
-        } else {
-            break;
-        }
-    }
-    return nFindHead
-}
-
-func handleLine(rawline:String) {
-    
-    if rawline.contains3PlusandOnlyChars("-")
-        || rawline.contains3PlusandOnlyChars("*")
-        || rawline.contains3PlusandOnlyChars("_"){
-            closeParagraph()
-            output += "<hr>\n"
-            return
-        }
-    var line = rawline
-    var endTags = [String]()
-    
-    var pos: String.Index = line.startIndex
-    
-    if line[0] == ">" {
-        output += "<blockquote>"
-        line = line.substringFromIndex(line.startIndex.advancedBy( ">".length))
-        endTags.append("</blockquote>")
-    }
-    
-    let nFindHead = calculateHeadLevel(line)
-    if (nFindHead > 0) {
-        isCurrentLineNeedBr = false
-        
-        output  += "<h\(nFindHead)>"
-        endTags.append("</h\(nFindHead)>")
-        pos = pos.advancedBy(  nFindHead)
-    } else {
-        beginParagraph()
-    }
-    
-    //line = this.handleImage(line, sb)
-    
-    let remaining = line.substringFromIndex(pos).trim()
-    parseInLine(remaining)
-    //output += "\n"
-    
-    for var i = endTags.count - 1; i >= 0; i-- {
-        output += endTags[i]
-    }
-    
-    //output += "\n"
-    
-}
-
-func parseInLine(line: String) {
-    let len = line.length
-    let start = line.startIndex
-    for var i = 0; i < len ; i++ {
-        let ch:Character = line[start.advancedBy(  i)]
-        
-        switch ch {
-        case "*","_","~":
-            if (i + 1 > len - 1) {
-                output.append(ch)
-                return
-            }
-            var strong = "strong"
-            if ch == "~" {
-                strong = "del"
-            }
-            if line[start.advancedBy(  i + 1)] == ch {
-                //possible **
-                let remaining = line.substringFromIndex(start.advancedBy(  i + 2))
-                i += scanClosedChar(MarkNoteParser.charArray(ch, len: 2),inStr: remaining,tag: strong) + 1
-            } else {
-                let remaining = line.substringFromIndex(start.advancedBy(  i + 1))
-                i += scanClosedChar("\(ch)",inStr: remaining,tag: "em")
-            }
-        case "`":
-            let remaining = line.substringFromIndex(start.advancedBy(  i + 1))
-            i += scanClosedChar("`",inStr: remaining,tag: "code")
-            isCurrentLineNeedBr = false
-            
-        case "!":
-            if i >= line.length - 1 || line[start.advancedBy(  i + 1)] != "[" {
-                output.append(ch)
-                continue
-            }
-            i++
-            let remaining = line.substringFromIndex(start.advancedBy(  i + 1))
-            let posArray = MarkNoteParser.detectPositions(["]","(",")"],inStr: remaining)
-            if posArray.count == 3 {
-                let img = ImageTag()
-                img.alt = line.substring(i + 1, end: i + 1 + posArray[0] - 1)
-                img.url = URLTag(url: line.substring( i + 1 + posArray[1] + 1, end: i + 1 + posArray[2] - 1)
-                                 )
-                output += img.toHtml()
-                i +=  posArray[2] + 1
-            }else {
-                // check image reference defintion
-                let posArray2 = MarkNoteParser.detectPositions(["]","[","]"],inStr: remaining)
-                if posArray2.count == 3 {
-                    //is reference usage
-                    let title = line.substring(i + 1, end: i + 1 + posArray2[0] - 1)
-                    let url = line.substring( i + 1 + posArray2[1] + 1, end: i + 1 + posArray2[2] - 1)
-                    let refer = ReferenceUsageInfo()
-                    refer.type = .Image
-                    refer.key = url.lowercaseString
-                    refer.title = title
-                    self.arrReferenceUsage.append(refer)
-                    output += refer.placeHolder()
-                    i += posArray2[2] + 1 + 1
-                }
-            }
-            
-        case "[":
-            let remaining = line.substringFromIndex(start.advancedBy(  i + 1))
-            let posArray = MarkNoteParser.detectPositions(["]","(",")"],inStr: remaining)
-            if posArray.count == 3 {
-                let link = LinkTag()
-                link.text = line.substring(i + 1, end: i + 1 + posArray[0] - 1)
-                link.url = URLTag(url: line.substring( i + 1 + posArray[1] + 1, end: i + 1 + posArray[2] - 1))
-                output += link.toHtml()
-                i +=  posArray[2] + 1
-            }else {
-                // check reference defintion
-                let pos = remaining.indexOf("]:")
-                if pos > 0 && pos < remaining.length - "]:".length {
-                    // is reference definition
-                    let info = ReferenceDefinition()
-                    info.key = remaining.substringToIndex(remaining.startIndex.advancedBy( pos ))
-                    let remaining2 = remaining.substringFromIndex(remaining.startIndex.advancedBy( pos + "]:".length ))
-                    info.url = URLTag(url: remaining2)
-                    self.arrReferenceInfo.append(info)
-                    i += pos + "]:".length + remaining2.length
-                } else {
-                    let posArray2 = MarkNoteParser.detectPositions(["]","[","]"],inStr: remaining)
-                    if posArray2.count == 3 {
-                        //is reference usage
-                        let title = line.substring(i + 1, end: i + 1 + posArray2[0] - 1)
-                        let url = line.substring( i + 1 + posArray2[1] + 1, end: i + 1 + posArray2[2] - 1)
-                        let refer = ReferenceUsageInfo()
-                        refer.type = .Link
-                        refer.key = url.lowercaseString
-                        refer.title = title
-                        self.arrReferenceUsage.append(refer)
-                        output += refer.placeHolder()
-                        i +=  pos + posArray2[2] + 1 + 1
-                    }
-                }
-            }
-        case "\"":
-            output += "&quot;"
-        default:
-            //do nothing
-            output.append(ch)
-        }
-    }
-}
-
-
-func  scanClosedChar(ch:String, inStr:String,tag:String) -> Int {
-    let pos = inStr.indexOf(ch)
-    if pos > 0 {
-        output += "<\(tag)>" + inStr.substringToIndex(inStr.startIndex.advancedBy(   pos )) + "</\(tag)>"
-    } else {
-        output += ch
-    }
-    return pos + ch.length
-}
-
-
 
 
 
 */
 
-+(NSString*)  charArray:(NSString*)ch len:(int)len{
++(NSString*) toHtml:(NSString*)input{
+    MarkNoteParser* instance = [[MarkNoteParser alloc]init];
+    //instance.output = ""
+    [instance parse:input];
+    return instance.outputString;
+}
+
+
+-(void) parse :(NSString*)input{
+    [self proceedHTMLTags:input];
+    [self proceedReference];
+}
+
+-(void) proceedReference{
+    for (ReferenceUsageInfo* refer in arrReferenceUsage) {
+        NSPredicate *predicte = [NSPredicate predicateWithFormat:
+                                 @"%k like %@",@"key", refer.key.lowercaseString];
+        NSArray* hitted = [arrReferenceInfo filteredArrayUsingPredicate:predicte];
+        if (hitted.count > 0) {
+            ReferenceDefinition* found = hitted[0];
+            NSString* actual = @"";
+            switch (refer.type) {
+            case Link:
+                if (found.url.title.length > 0) {
+                    actual = [NSString stringWithFormat: @"<a href=\"%@\" title=\"%@\">%@</a>",found.url.url,found.url.title,refer.title];
+                } else {
+                    actual = [NSString stringWithFormat: @"<a href=\"%@\">%@</a>",found.url.url,refer.title];
+                   
+                }
+            case Image:
+                if (found.url.title.length > 0){
+                    actual = [NSString stringWithFormat: @"img src=\"%@\" alt=\"%@\" title=\"%@\"/>",found.url.url,refer.title,found.url.title];
+                    
+                    
+                } else {
+                    actual = [NSString stringWithFormat: @"img src=\"%@\" alt=\"%@\" />",found.url.url,refer.title];
+                  
+                }
+            }
+            output = [NSMutableString stringWithString:  [output stringByReplacingOccurrencesOfString:[refer placeHolder] withString:actual]];
+            
+        }
+    }
+}
+
+
+-(void) proceedHTMLTags:(NSString*)input{
+    NSUInteger currentPos = 0;
+    NSUInteger tagBegin = [input indexOf:@"<"];
+    if (tagBegin !=NSNotFound) {
+        if (tagBegin >= 1) {
+            NSString* tmp = [input substringWithRange:NSMakeRange(currentPos, tagBegin  - currentPos)];
+            [self proceedNoHtml:tmp];
+            
+        }
+        //currentPos = tagBegin
+        if (tagBegin < input.length - 1) {
+            NSString* left = [input substringWithRange:NSMakeRange(tagBegin, input.length  - tagBegin)];
+          
+            NSUInteger endTag = [left indexOf:@">"];
+            if (endTag != NSNotFound) {
+                // found
+                if ([left characterAtIndex: endTag - 1] == '/') {
+                    //auto close: <XXX />
+                    [output appendString: [left substringToIndex: endTag + 1]];
+                    if (endTag < left.length - 2 ){
+                        [self proceedHTMLTags:[left substringFromIndex: endTag + 1 ]];
+                    }
+                } else {
+                    // there is a close tag
+                    currentPos = endTag;
+                    if (endTag <= left.length - 1) {
+                        left = [left substringFromIndex: endTag + 1 ];
+                        endTag = [left indexOf:@">"];
+                        if (endTag !=NSNotFound ){
+                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin, tagBegin + currentPos + 2)]];
+                                                  //substring(tagBegin, end: tagBegin + endTag + currentPos + 1) //+
+                            if (endTag < left.length - 1) {
+                                left = [left substringFromIndex:endTag + 1 ];
+                                //.substringFromIndex(left.startIndex.advancedBy( endTag + 1 ))
+                                [self proceedHTMLTags:left];
+                                return;
+                            }
+                        } else {
+                            [self proceedNoHtml:input];
+                            return;
+                        }
+                    } else {
+                        [output appendString: input];
+                        return;
+                    }
+                }
+            }else {
+                // not found
+                [self proceedNoHtml:left];
+            }
+        }
+    }else {
+        [self proceedNoHtml:input];
+    }
+}
+-(void) proceedNoHtml:(NSString*)input{
+    NSString* preProceeded = [input stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
+    preProceeded = [preProceeded stringByReplacingOccurrencesOfString:@"\n" withString:@"  \n"];
+    
+    //replaceAll("\r\n", toStr: "\n").replaceAll("\n", toStr:"  \n")
+    
+    
+    //let lines = split(preProceeded){$0 == "\n"}
+    NSArray<NSString*>* lines = [preProceeded componentsSeparatedByString:@"\n" ];
+    BOOL isInCodeBlock = false;
+    
+    
+    //for rawline in lines {
+    for (int i = 0; i < lines.count; i++){
+        isCurrentLineNeedBr = true;
+        
+        NSString* line = [lines[i] trim];
+        
+        if (isInCodeBlock) {
+            if ([line indexOf:@"```"] != NSNotFound) {
+                isInCodeBlock = false;
+                [output appendString:@"</pre>\n"];
+                isCurrentLineNeedBr = false;
+                continue;
+            }else {
+                [output appendString: [line stringByReplacingOccurrencesOfString: @"\""withString:@"&quot;"]];
+                [output appendString:@"\n"];
+                //<#(nonnull NSString *)#> ("\"", toStr:"&quot;") + "\n"
+            }
+        } else if (bInTable && line.length > 0) {
+            [self handleTableLine:line isHead:false];
+        } else {
+            // not in block
+            if  (line.length == 0) {
+                // empty line
+                [self closeTags];
+                [self closeParagraph];
+                [self closeTable];
+                isAfterEmptyLine = true;
+                isCurrentLineNeedBr = false;
+                continue;
+            }else {
+                isAfterEmptyLine = false;
+            }
+            
+            if ([line indexOf:@"- "] == 0
+                || [line indexOf:@"* "] == 0
+                || [line indexOf:@"+ "] == 0 ){
+                    if (nCurrentBulletLevel == 0 ){
+                        [output  appendString:@"<ul>\n"];
+                        [blockEndTags addObject:@"</ul>\n"];
+                        nCurrentBulletLevel = 1;
+                        isCurrentLineNeedBr = false;
+                        
+                    }
+                    [output appendString:@"<li>"];
+                NSString* newline = [line substringWithRange:NSMakeRange(@"- ".length, line.length - @"- ".length)];
+                //.substring("- ".length, end: line.length - 1)
+                [self handleLine:newline];
+                [output appendString:@"</li>\n"];
+                continue;
+                } else {
+                    if (nCurrentBulletLevel > 0) {
+                        nCurrentBulletLevel = 0;
+                        [output appendString:@"</ul>\n"];
+                    }
+                }
+            
+            if  ([line indexOf:@"```"] == 0) {
+                isInCodeBlock = true;
+                NSString* cssClass = @"no-highlight";
+                if (line.length > @"```".length) {
+                    //prettyprint javascript prettyprinted
+                    NSString* remaining = [line substringFromIndex:@"```".length];
+                    cssClass = [NSString stringWithFormat:  @"prettyprint lang-%@",remaining];
+                }
+                [output appendFormat:@"<pre class=\"%@\">\n",cssClass];
+                continue; // ignor current line
+            }
+            
+            if (i + 1 <= lines.count - 1) {
+                NSString* nextLine = [lines[i + 1] trim];
+                if ([nextLine contains3PlusandOnlyChars:@"="]){
+                    [output appendFormat: @"<h1>%@</h1>\n",line ];
+                    i++;
+                    continue;
+                } else if ([nextLine contains3PlusandOnlyChars:@"-"]){
+                    [output appendFormat: @"<h2>%@</h2>\n",line ];
+                    i++;
+                    continue;
+                } else if ( [nextLine indexOf:@"|"] != NSNotFound
+                           && [line indexOf:@"|"] != NSNotFound
+                           && [[[[nextLine stringByReplacingOccurrencesOfString:@"|" withString:@""] stringByReplacingOccurrencesOfString:@"-" withString:@""]
+                                stringByReplacingOccurrencesOfString:@":" withString:@""]
+                               stringByReplacingOccurrencesOfString:@" " withString:@""].length ==0 )
+                           
+                    
+                {
+                    
+                    [self beginTable:nextLine];
+                    [self handleTableLine:line isHead:true];
+                    i++;
+                    continue;
+                }
+            }
+            
+            
+            [self handleLine:line];
+            if  (isCurrentLineNeedBr
+                && lines[i].length >= 2
+                && [[lines[i] substringFromIndex:lines[i].length - 2] isEqualToString:@"  "] ){
+                    [output appendString:@"<br/>"];
+                }
+            
+            //output += "</p>"
+        }
+    }//end for
+    [self closeTags];
+    [self closeParagraph];
+    
+}
+
+
+
+
+
+-(void) parseInLine:(NSString*)line {
+    int len = (int)line.length;
+    int start = 0;
+    for (int i = 0; i < len ; i++) {
+        unichar ch = [line characterAtIndex:i];
+        
+        switch (ch) {
+        case '*':
+        case '_':
+        case '~':
+            {
+                if (i + 1 > len - 1) {
+                    [output appendFormat:@"%c", ch];
+                    return;
+                }
+                NSString* strong = @"strong";
+                if (ch == '~') {
+                    strong = @"del";
+                }
+                if ([line characterAtIndex:i+1] == ch) {
+                    //possible **
+                    NSString* remaining = [line substringFromIndex:  i + 2];
+                    i += [self scanClosedChar: [MarkNoteParser charArray:ch len: 2]
+                                        inStr: remaining
+                                          tag: strong] + 1;
+                } else {
+                    NSString* remaining = [line substringFromIndex:  i + 1];
+                    i += [self scanClosedChar: [NSString stringWithFormat:@"%c",ch ]
+                                        inStr:remaining
+                                          tag: @"em"];
+                }
+            }
+            break;
+        case '`':
+            {NSString* remaining = [line substringFromIndex:  i + 1];
+                i += [self scanClosedChar:@"`"
+                                    inStr: remaining
+                                      tag: @"code"];
+                isCurrentLineNeedBr = false;}
+                break;
+            
+        case '!':
+            {
+                
+                if (i >= line.length - 1 || [line characterAtIndex: i + 1] != '[') {
+                    
+                    [output appendFormat:@"%c", ch];
+                    continue;
+                }
+                i++;
+                NSString* remaining = [line substringFromIndex:  i + 1];
+                NSArray<NSNumber*>* posArray = [MarkNoteParser detectPositions:@[@"]",@"(",@")"] inStr: remaining];
+                if (posArray.count == 3) {
+                    ImageTag* img = [[ImageTag alloc] init];
+                    img.alt = [line substringWithRange:NSMakeRange(i + 1,  posArray[0].intValue - 1 )];
+                    URLTag* urlTag = [[URLTag alloc]init];
+                    urlTag.url = [line substringWithRange:NSMakeRange(i + 1 + posArray[1].intValue + 1,    posArray[2].intValue - posArray[1].intValue -1)];
+                    //line.substring( i + 1 + posArray[1] + 1, end: i + 1 + posArray[2] - 1)
+                    img.url = urlTag;
+                    [output appendString: [img toHtml]];
+                    i +=  posArray[2].intValue + 1;
+                }else {
+                    // check image reference defintion
+                    NSArray<NSNumber*>* posArray2 = [MarkNoteParser detectPositions:@[@"]",@"[",@"]"]
+                                                                              inStr: remaining];
+                    if (posArray2.count == 3) {
+                        //is reference usage
+                        NSString* title = [line substringWithRange:NSMakeRange(i + 1, posArray2[0].intValue)];
+                        
+                        NSString* url = [line substringWithRange:NSMakeRange(i + 1 + posArray2[1].intValue + 1, posArray2[2].intValue - posArray2[1].intValue -1)];
+                        //.substring( i + 1 + posArray2[1] + 1, end: i + 1 + posArray2[2] - 1)
+                        ReferenceUsageInfo* refer = [[ReferenceUsageInfo alloc] init];
+                        refer.type = Image;
+                        refer.key = url.lowercaseString;
+                        refer.title = title;
+                        [arrReferenceUsage addObject:refer];
+                        
+                        [output appendString:  [refer placeHolder]];
+                        i += posArray2[2].intValue + 1 + 1;
+                    }
+                }
+            }
+                break;
+            
+        case '[':
+            {
+            NSString* remaining = [line substringFromIndex: i + 1];
+            NSArray<NSNumber*>* posArray = [MarkNoteParser detectPositions:@[@"]",@"(",@")"]
+                                                                     inStr: remaining];
+            if (posArray.count == 3) {
+                LinkTag* link = [[LinkTag alloc] init];
+                link.text = [line substringWithRange:NSMakeRange(i + 1, posArray[0].intValue) ];
+                //.substring(i + 1, end: i + 1 + posArray[0] - 1)
+                URLTag* urlTag = [[URLTag alloc] init];
+                urlTag.url = [line substringWithRange: NSMakeRange(i + 1 + posArray[1].intValue + 1, posArray[2].intValue - posArray[1].intValue )];
+                link.url =  urlTag;
+                [output appendString: [link toHtml] ];
+                i +=  posArray[2].intValue + 1;
+            }else {
+                // check reference defintion
+                NSUInteger pos = [remaining indexOf:@"]:"];
+                if (pos != NSNotFound && pos < remaining.length - @"]:".length) {
+                    // is reference definition
+                    ReferenceDefinition* info = [ReferenceDefinition new];
+                    info.key = [remaining substringToIndex:pos];
+                    //.substringToIndex(remaining.startIndex.advancedBy( pos ))
+                    NSString* remaining2 = [remaining substringFromIndex: pos + @"]:".length ];
+                    URLTag* urlTag = [[URLTag alloc] init];
+                    urlTag.url = remaining2;
+                    [arrReferenceInfo addObject:info];
+                    i += pos + @"]:".length + remaining2.length;
+                } else {
+                    NSArray<NSNumber*>* posArray2 = [MarkNoteParser detectPositions:@[@"]",@"[",@"]"]
+                                                                              inStr: remaining];
+                    if (posArray2.count == 3) {
+                        //is reference usage
+                        NSString* title = [line substringWithRange:NSMakeRange(i + 1, posArray2[0].intValue)];
+                       
+                        NSString* url = [line substringWithRange:NSMakeRange(i + 1 + posArray2[1].intValue + 1, posArray2[2].intValue - posArray2[1].intValue )];
+                        
+                        ReferenceUsageInfo* refer = [ReferenceUsageInfo new];
+                        refer.type = Link;
+                        refer.key = url.lowercaseString;
+                        refer.title = title;
+                        [arrReferenceUsage addObject: refer];
+                        [output appendString: [refer placeHolder]];
+                        i +=  pos + posArray2[2].intValue + 1 + 1;
+                    }
+                }
+            }
+            }
+                break;
+        case '\"':
+            [output appendString:@"&quot;"];
+                break;
+        default:
+            //do nothing
+            [output appendFormat:@"%c", ch];
+        }
+    }
+}
+
+
+-(void) handleLine:(NSString*)rawline {
+    
+    if ([rawline contains3PlusandOnlyChars:@"-"]
+        || [rawline contains3PlusandOnlyChars:@"*"]
+        || [rawline contains3PlusandOnlyChars:@"_"]){
+        [self closeParagraph];
+            [output appendString:@"<hr>\n"];
+        return;
+    }
+    NSString* line = rawline;
+    NSMutableArray* endTags = [NSMutableArray array];
+    
+    int pos = 0;
+    
+    if ([line characterAtIndex:0] == '>') {
+        [output appendString:@"<blockquote>"];
+        line = [line substringFromIndex:1];
+        [endTags addObject:@"</blockquote>"];
+    }
+    
+    int nFindHead = [self calculateHeadLevel:line];
+    if (nFindHead > 0) {
+        isCurrentLineNeedBr = false;
+        
+        [output appendString:@"<h\(nFindHead)>"];
+        [endTags addObject:@"</h\(nFindHead)>"];
+        pos += nFindHead;
+    } else {
+        [self beginParagraph];
+    }
+    
+    //line = this.handleImage(line, sb)
+    
+    NSString* remaining = [[line substringFromIndex:pos] trim];
+    [self parseInLine:remaining];
+    //output += "\n"
+    
+    for (int i = (int)(endTags.count) - 1; i >= 0; i--) {
+        [output appendString: endTags[i]];
+    }
+    
+    //output += "\n"
+    
+}
+
+
+-(void) handleTableLine:(NSString*)rawline isHead:(BOOL)isHead {
+    NSArray* cols = [rawline componentsSeparatedByString:@"|"];
+    
+    [output appendString:@"<tr>"];
+    int i = 0;
+    
+    for(NSString* col in cols) {
+        NSString* colAlign = tableColsAlignment[i];
+        if (isHead) {
+            [output appendString: colAlign.length > 0 ? @"<th \(colAlign)>" : @"<th>"];
+            [self parseInLine:col];
+            [output appendString:@"</th>"];
+        } else {
+            [output appendString:colAlign.length > 0 ? @"<td \(colAlign)>" : @"<td>"];
+            [self parseInLine:col];
+
+            [output appendString:@"</td>"];
+        }
+        i++;
+    }
+    [output appendString:@"</tr>"];
+}
+
+-(void) beginTable:(NSString*)alignmentLine{
+    if (!bInTable ){
+        bInTable = true;
+        [output appendString:@"<table>"];
+        [tableColsAlignment removeAllObjects];
+        NSArray<NSString *> * arr = [[alignmentLine trim] componentsSeparatedByString:@"|"];
+        for (NSString* col in arr) {
+            if ([col indexOf:@":-"] != NSNotFound && [col indexOf:@"-:"] != NSNotFound  ){
+                [tableColsAlignment addObject:@"style=\"text-align: center;\""];
+            }else if ([col indexOf:@"-:"] != NSNotFound){
+                [tableColsAlignment addObject:@"style=\"text-align: right;\""];
+            }else {
+                [tableColsAlignment addObject:@"" ];
+            }
+        }
+    }
+}
+
+
+-(int) calculateHeadLevel:(NSString*)line{
+    int nFindHead = 0;
+    int pos = 0;
+    for (int i = 0; i <= 6 && i < [line length]; i++ ){
+        pos = i ;
+        if ([line characterAtIndex:i]== headerChar)  {
+            nFindHead = i + 1;
+        } else {
+            break;
+        }
+    }
+    return nFindHead;
+}
+
+-(void) closeTags{
+    for (int i = (int)blockEndTags.count - 1; i >= 0; i--) {
+        [output appendString: blockEndTags[i]];
+        //blockEndTags.removeAtIndex(i)
+    }
+    //blockEndTags.removeAll(keepCapacity: false)
+    [blockEndTags removeAllObjects];
+}
+
+-(void) closeParagraph{
+    if (isInParagraph) {
+        isInParagraph = false;
+        [output appendString: @"</p>\n"];
+    }
+}
+
+-(void) beginParagraph{
+    if (!isInParagraph) {
+        isInParagraph = true;
+        [output appendString: @"<p>"];
+    }
+}
+
+
+-(void) closeTable{
+    if (bInTable) {
+        bInTable = false;
+        [output appendString: @"</table>"];
+    }
+}
+
+-(NSUInteger)  scanClosedChar:(NSString*)ch inStr:(NSString*)inStr tag:(NSString*)tag {
+    NSUInteger pos = [inStr indexOf:ch];
+    if (pos != NSNotFound) {
+        NSString* temp = [inStr substringToIndex:pos];
+        [output appendFormat:@"<%@>%@</%@>",
+         tag,
+         temp,
+         tag];
+        } else {
+        [output appendString:ch];
+    }
+    return pos + ch.length;
+}
+
+
++(NSString*)  charArray:(unichar)ch len:(int)len{
     NSMutableString* sb = [[NSMutableString alloc] init];
     for (int i = 0 ; i < len ; i++) {
-        [sb appendString:ch];
+        [sb appendFormat:@"%c",ch];
     }
     NSString* result = [NSString stringWithString:sb];
+    [sb setString: @""];
     return result;
 }
 
-+(NSArray<NSString*>*)detectPositions:(NSArray<NSString *> *)toFind inStr:(NSString* )inStr{
-    NSMutableArray* posArray = [NSMutableArray array];// [Int]()
++(NSArray<NSNumber*>*)detectPositions:(NSArray<NSString *> *)toFind inStr:(NSString* )inStr{
+    NSMutableArray<NSNumber*>* posArray = [NSMutableArray array];// [Int]()
     NSUInteger count = toFind.count;
     int lastPos = 0;
     for (int i = 0; i < count ; i++){
@@ -495,7 +575,7 @@ func  scanClosedChar(ch:String, inStr:String,tag:String) -> Int {
         
         if (pos != NSNotFound) {
             lastPos += pos;
-            [posArray addObject:[NSString stringWithFormat:@"%d",lastPos] ];
+            [posArray addObject:[NSNumber numberWithInt:lastPos]  ];
            // [posArray append:lastPos];
         }else {
             return posArray;

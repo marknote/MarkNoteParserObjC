@@ -11,7 +11,7 @@
 #import "MarkNoteParser.h"
 
 @interface MarkNoteParserOCTests : XCTestCase
-
+- (void) htmlEquals:(NSString*) expected actual:(NSString*) actual;
 @end
 
 @implementation MarkNoteParserOCTests
@@ -26,21 +26,33 @@
     [super tearDown];
 }
 
+NSString* markdown(NSString* input){
+    NSString* result = [MarkNoteParser toHtml:input];
+    return result;
+}
+
+- (void) htmlEquals:(NSString*) expected actual:(NSString*) actual {
+    XCTAssertEqualObjects(expected,actual);
+}
+
+void assertHtmlEauql(NSString* expected,NSString* actual){
+    NSString* exp = [expected stringByReplacingOccurrencesOfString:@"\n" withString:@"" ];
+    
+    NSString* act = [actual stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    MarkNoteParserOCTests* test = [MarkNoteParserOCTests new];
+    [test htmlEquals:exp actual:act];
+ 
+    
+
+}
+
+
 /*
 
-func markdown(input :String)->String{
-    let result = MarkNoteParser.toHtml(input)
-    print("input: \(input) result:\(result)")
-    return result
-}
 
 
 
-func assertHtmlEauql(expected:String, _ actual:String, _ message:String = ""){
-    return XCTAssertEqual(expected.stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil),
-                          actual.stringByReplacingOccurrencesOfString("\n", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil),
-                          message)
-}
+
 
 func testHeading() {
     assertHtmlEauql("<h1>Hello</h1>", markdown("# Hello"), "H1 Heading Pass")
@@ -197,37 +209,44 @@ func testTable(){
     assertHtmlEauql(expected, actual)
 }
 
-func testTableWithoutOuterPipe(){
+
+ */
+
+- (void) testTableWithoutOuterPipe{
     
-    let input = "a|b|c\n------|-----|-----\n1|2|3\n\n\n"
-    let expected = "<table><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>"
-    let actual = markdown(input)
-    assertHtmlEauql(expected, actual)
+    NSString* input = @"a|b|c\n------|-----|-----\n1|2|3\n\n\n";
+    NSString* expected = @"<table><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>";
+    NSString* actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
-func testTableWithColumnAignment(){
+- (void) testTableWithColumnAignment{
     
-    let input = "a|b|c\n------|:-----:|-----:\n1|2|3\n\n\n"
-    let expected = "<table><tr><th>a</th><th style=\"text-align: center;\">b</th><th style=\"text-align: right;\">c</th></tr><tr><td>1</td><td style=\"text-align: center;\">2</td><td style=\"text-align: right;\">3</td></tr></table>"
-    let actual = markdown(input)
-    assertHtmlEauql(expected, actual)
+    NSString* input = @"a|b|c\n------|:-----:|-----:\n1|2|3\n\n\n";
+    NSString* expected = @"<table><tr><th>a</th><th style=\"text-align: center;\">b</th><th style=\"text-align: right;\">c</th></tr><tr><td>1</td><td style=\"text-align: center;\">2</td><td style=\"text-align: right;\">3</td></tr></table>";
+    NSString* actual = markdown(input);
+    assertHtmlEauql(expected, actual);
 }
 
 
-*/
+
 
 
 - (void) testDetectPositions {
-    NSArray<NSString*>* expected = @[@"1",@"2",@"3"];
-    NSArray<NSString*>* actual = [MarkNoteParser detectPositions:@[@"1",@"2",@"3"] inStr:@"0123"];
+    NSArray<NSNumber*>* expected = @[[NSNumber numberWithInt: 1],
+                                     [NSNumber numberWithInt: 2],
+                                     [NSNumber numberWithInt: 3]];
+    NSArray<NSNumber*>* actual = [MarkNoteParser detectPositions:@[@"1",@"2",@"3"] inStr:@"0123"];
     XCTAssertEqualObjects(expected, actual);
     
 }
 
 - (void)testDetectPositions2{
     
-    NSArray<NSString*>* expected = @[@"2",@"4",@"5"];
-    NSArray<NSString*>* actual = [MarkNoteParser detectPositions:@[@"2",@"4",@"5"] inStr:@"012345"];
+    NSArray<NSNumber*>* expected = @[[NSNumber numberWithInt: 2],
+                                     [NSNumber numberWithInt: 4],
+                                     [NSNumber numberWithInt: 5]];
+    NSArray<NSNumber*>* actual = [MarkNoteParser detectPositions:@[@"2",@"4",@"5"] inStr:@"012345"];
     XCTAssertEqualObjects(expected, actual);
     
     
