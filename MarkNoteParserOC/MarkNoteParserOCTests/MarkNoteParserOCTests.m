@@ -134,12 +134,15 @@ NSString* markdown(NSString* input){
 }
 
 - (void)testEmphasis {
+    [self assertHtmlEauql:@"a * abc" actual:markdown(@"a * abc")];
     [self assertHtmlEauql:@"<p><em>Hello</em></p>\n" actual:markdown(@"*Hello*")];
     [self assertHtmlEauql:@"<p><em>World</em></p>\n" actual:markdown(@"_World_")];
     [self assertHtmlEauql:@"<p>123<em>Hello</em>456</p>\n" actual:markdown(@"123*Hello*456")];
     [self assertHtmlEauql:@"<p>123<em>World</em>456</p>\n" actual:markdown(@"123_World_456")];
     [self assertHtmlEauql:@"<p>123<em>Hello</em>456123<em>world</em>456</p>\n" actual:markdown(@"123*Hello*456123*world*456")];
     [self assertHtmlEauql:@"<p>123<em>World</em>456123<em>world</em>456</p>\n" actual:markdown(@"123_World_456123*world*456")];
+    
+    [self assertHtmlEauql:@"<p>在前后各加一个 <em> 或者 _,  即可实现 </em>斜体* 。</p>" actual:markdown(@"在前后各加一个 * 或者 _,  即可实现 *斜体* 。")];
 }
 
 - (void) testBulletList

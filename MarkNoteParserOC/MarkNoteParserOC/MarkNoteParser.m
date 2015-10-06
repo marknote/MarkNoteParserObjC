@@ -282,7 +282,7 @@ const unichar headerChar = '#';
                 if (ch == '~') {
                     strong = @"del";
                 }
-                if ([line characterAtIndex:i+1] == ch) {
+                if ([line characterAtIndex:i + 1] == ch) {
                     //possible **
                     NSString* remaining = [line substringFromIndex:  i + 2];
                     i += [self scanClosedChar: [MarkNoteParser charArray:ch len: 2]
@@ -558,10 +558,12 @@ const unichar headerChar = '#';
          tag,
          temp,
          tag];
-        } else {
+        return pos + ch.length;
+    } else {
         [output appendString:ch];
+        return ch.length;
     }
-    return pos + ch.length;
+    
 }
 
 
