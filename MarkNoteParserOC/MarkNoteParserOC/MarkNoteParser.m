@@ -402,7 +402,7 @@ const unichar headerChar = '#';
                 break;
         default:
             //do nothing
-            [output appendFormat:@"%c", ch];
+            [output appendFormat:@"%C", ch];
         }
     }
 }

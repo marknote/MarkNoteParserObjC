@@ -57,13 +57,16 @@ NSString* markdown(NSString* input){
 
 - (void) testHeading {
     [self assertHtmlEauql:@"<h1>Hello</h1>" actual:markdown(@"# Hello")];
-     [self assertHtmlEauql:@"<h2>Hello</h2>" actual:markdown(@"## Hello")];
-      [self assertHtmlEauql:@"<h3>Hello</h3>" actual:markdown(@"### Hello")];
-       [self assertHtmlEauql:@"<h4>Hello</h4>" actual:markdown(@"#### Hello")];
-        [self assertHtmlEauql:@"<h5>Hello</h5>" actual:markdown(@"##### Hello")];
-         [self assertHtmlEauql:@"<h6>Hello</h6>" actual:markdown(@"###### Hello")];
+    [self assertHtmlEauql:@"<h2>Hello</h2>" actual:markdown(@"## Hello")];
+    [self assertHtmlEauql:@"<h3>Hello</h3>" actual:markdown(@"### Hello")];
+    [self assertHtmlEauql:@"<h4>Hello</h4>" actual:markdown(@"#### Hello")];
+    [self assertHtmlEauql:@"<h5>Hello</h5>" actual:markdown(@"##### Hello")];
+    [self assertHtmlEauql:@"<h6>Hello</h6>" actual:markdown(@"###### Hello")];
 }
 
+- (void) testUTF8Heading{
+    [self assertHtmlEauql:@"<h1>Markdown 快速参考</h1>" actual:markdown(@"# Markdown 快速参考")];
+}
 
 - (void) testFencedCode {
     [self assertHtmlEauql:@"<pre class=\"prettyprint lang-swift\">println(&quot;Hello&quot;)\n</pre>\n" actual:markdown(@"```swift\nprintln(\"Hello\")\n```")];
