@@ -507,9 +507,9 @@ const unichar headerChar = '#';
 
 -(int) calculateHeadLevel:(NSString*)line{
     int nFindHead = 0;
-    int pos = 0;
+    //int pos = 0;
     for (int i = 0; i <= 6 && i < [line length]; i++ ){
-        pos = i ;
+        //pos = i ;
         if ([line characterAtIndex:i]== headerChar)  {
             nFindHead = i + 1;
         } else {
