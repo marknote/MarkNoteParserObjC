@@ -18,7 +18,7 @@
 
 @interface MarkNoteParser : NSObject{
     BOOL bInTable;
-    NSMutableString* output;
+    NSMutableString* _output;
     int nCurrentBulletLevel ;
     BOOL isInParagraph ;
     BOOL isAfterEmptyLine;

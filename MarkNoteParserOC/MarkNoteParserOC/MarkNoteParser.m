@@ -13,14 +13,16 @@ const unichar headerChar = '#';
 
 
 
+
+
 @implementation MarkNoteParser
-@synthesize outputString = output;
+@synthesize outputString = _output;
 
 -(id) init{
     self = [super init];
     
     bInTable = false;
-    output = [NSMutableString stringWithCapacity:0];
+    _output = [NSMutableString stringWithCapacity:0];
     isInParagraph = false;
     isAfterEmptyLine = false;
     tableColsAlignment = [NSMutableArray array];
@@ -47,9 +49,11 @@ const unichar headerChar = '#';
 
 
 -(void) parse :(NSString*)input{
-    [self proceedHTMLTags:input];
+    //[self proceedHTMLTags:input];
+    [ self proceedCodeBlock:input];
     [self proceedReference];
 }
+
 
 -(void) proceedReference{
     for (ReferenceUsageInfo* refer in arrReferenceUsage) {
@@ -79,12 +83,133 @@ const unichar headerChar = '#';
                 }
                     break;
             }
-            output = [NSMutableString stringWithString:  [output stringByReplacingOccurrencesOfString:[refer placeHolder] withString:actual]];
+            _output = [NSMutableString stringWithString:  [_output stringByReplacingOccurrencesOfString:[refer placeHolder] withString:actual]];
             
         }
     }
 }
 
+-(void) proceedCodeBlock:(NSString*)string{
+   
+    //NSString* preProceeded = [input stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
+    //preProceeded = [preProceeded stringByReplacingOccurrencesOfString:@"\n" withString:@"  \n"];
+    
+    //NSArray<NSString*>* lines = [preProceeded componentsSeparatedByString:@"\n" ];
+    //BOOL isInCodeBlock = false;
+    
+    //NSMutableString *nonCodeblockString = [[NSMutableString alloc] init];
+    
+    //for rawline in lines {
+    //NSUInteger pos = [input indexOf:@"\n```"];
+    int blockCount = 0;
+    NSRange searchRange = NSMakeRange(0,string.length);
+    NSString *codeTag = @"```";
+    NSRange foundRange;
+    NSRange proceedRange;
+    while (searchRange.location < string.length) {
+        searchRange.length = string.length - searchRange.location;
+        foundRange = [string rangeOfString:codeTag options:NSLiteralSearch range:searchRange];
+        if (foundRange.location != NSNotFound) {
+            blockCount ++;
+            // found an occurrence of the substring! do stuff here
+            proceedRange = NSMakeRange(searchRange.location , foundRange.location - searchRange.location);
+            
+            //isInCodeBlock = !isInCodeBlock; // code block flag
+            searchRange.location = foundRange.location + foundRange.length;
+            
+        } else {
+            // no more substring to find
+            //break;
+            proceedRange = searchRange;//NSMakeRange(searchRange.location, foundRange.location);
+        }
+        //if (proceedRange.length == 0) continue;
+        //NSString* stringBeforeTag =  [string substringWithRange:proceedRange];
+        
+        
+        // proceed contents before code
+        if (blockCount % 2 == 1) { // code block just begins
+            if(proceedRange.length >0 ){
+                [self proceedHTMLTags:[string substringWithRange:proceedRange]];
+            }
+            NSString* cssClass = @"no-highlight";
+            
+            if(searchRange.location < string.length) {
+                NSRange rangeOfNewLine = [string rangeOfString:@"\n" options:NSLiteralSearch range:
+                                         NSMakeRange(searchRange.location, string.length - searchRange.location) ] ;//[[string substringWithRange:searchRange] rangeOfString: @"\n"];
+                if (rangeOfNewLine.location != NSNotFound) {
+                    NSRange cssRange = NSMakeRange(searchRange.location , rangeOfNewLine.location - searchRange.location );
+                    searchRange.location += cssRange.length;
+                    NSString *codeName = [[string substringWithRange:cssRange] trim];
+                    if (codeName.length>0) {
+                        cssClass = [NSString stringWithFormat:  @"prettyprint lang-%@",codeName];
+                    }
+                    
+                }
+            }
+            
+            [_output appendFormat:@"<pre class=\"%@\">\n",cssClass];
+        } else { // code block ends
+            if (blockCount > 0 && foundRange.location != NSNotFound) {
+                
+                if(proceedRange.length >0 ){
+                    [_output appendString:[string substringWithRange:proceedRange]];
+                }
+                
+                [_output appendString:@"</pre>\n"];
+            } else {
+                if(proceedRange.length >0 ){
+                    [self proceedHTMLTags:[string substringWithRange:proceedRange]];
+                }
+            }
+        }
+        
+        if (foundRange.location == NSNotFound) {
+            break;
+        }
+
+    }
+    
+    
+    /*for (int i = 0; i < lines.count; i++){
+        NSString* line = lines[i];
+        
+        if  ([line indexOf:@"```"] == 0) {
+            isInCodeBlock = !isInCodeBlock; // code block flag
+            
+            
+            if (isInCodeBlock) {
+                [self proceedHTMLTags:nonCodeblockString];
+                [nonCodeblockString setString:@""];
+
+                NSString* cssClass = @"no-highlight";
+                line = [line trim];
+                if (line.length > @"```".length) {
+                    //prettyprint javascript prettyprinted
+                    NSString* remaining = [line substringFromIndex:@"```".length];
+                    cssClass = [NSString stringWithFormat:  @"prettyprint lang-%@",remaining];
+                }
+                [output appendFormat:@"<pre class=\"%@\">\n",cssClass];
+                continue; // ignor current line
+            } else {
+                [output appendString:@"</pre>\n"];
+            }
+        }else {
+            if (isInCodeBlock) {
+                // current line is code
+                [output appendFormat:@"%@\n",line];
+            } else {
+                // current line is not in code block, put into stack directly
+                
+                [nonCodeblockString appendFormat:@"%@  \n",line];
+            }
+        }
+    }
+    
+    [self proceedHTMLTags:nonCodeblockString];
+    [nonCodeblockString setString:@""];*/
+
+
+}
 
 -(void) proceedHTMLTags:(NSString*)input{
     NSUInteger currentPos = 0;
@@ -104,7 +229,7 @@ const unichar headerChar = '#';
                 // found
                 if ([left characterAtIndex: endTag - 1] == '/') {
                     //auto close: <XXX />
-                    [output appendString: [left substringToIndex: endTag + 1]];
+                    [_output appendString: [left substringToIndex: endTag + 1]];
                     if (endTag < left.length - 2 ){
                         [self proceedHTMLTags:[left substringFromIndex: endTag + 1 ]];
                     }
@@ -115,7 +240,7 @@ const unichar headerChar = '#';
                         left = [left substringFromIndex: endTag + 1 ];
                         endTag = [left indexOf:@">"];
                         if (endTag !=NSNotFound ){
-                            [output appendString:[ input substringWithRange:NSMakeRange(tagBegin, endTag + currentPos + 2)]];
+                            [_output appendString:[ input substringWithRange:NSMakeRange(tagBegin, endTag + currentPos + 2)]];
                                                   //substring(tagBegin, end: tagBegin + endTag + currentPos + 1) //+
                             if (endTag < left.length - 1) {
                                 left = [left substringFromIndex:endTag + 1 ];
@@ -128,7 +253,7 @@ const unichar headerChar = '#';
                             return;
                         }
                     } else {
-                        [output appendString: input];
+                        [_output appendString: input];
                         return;
                     }
                 }
@@ -142,31 +267,20 @@ const unichar headerChar = '#';
     }
 }
 -(void) proceedNoHtml:(NSString*)input{
+    
+    //NSArray<NSString*>* lines = [input componentsSeparatedByString:@"\n" ];
     NSString* preProceeded = [input stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
     preProceeded = [preProceeded stringByReplacingOccurrencesOfString:@"\n" withString:@"  \n"];
     
     NSArray<NSString*>* lines = [preProceeded componentsSeparatedByString:@"\n" ];
-    BOOL isInCodeBlock = false;
-    
-    
     //for rawline in lines {
     for (int i = 0; i < lines.count; i++){
         isCurrentLineNeedBr = true;
         
         NSString* line = [lines[i] trim];
         
-        if (isInCodeBlock) {
-            if ([line indexOf:@"```"] != NSNotFound) {
-                isInCodeBlock = false;
-                [output appendString:@"</pre>\n"];
-                isCurrentLineNeedBr = false;
-                continue;
-            }else {
-                [output appendString: [line stringByReplacingOccurrencesOfString: @"\""withString:@"&quot;"]];
-                [output appendString:@"\n"];
-                //<#(nonnull NSString *)#> ("\"", toStr:"&quot;") + "\n"
-            }
-        } else if (bInTable && line.length > 0) {
+      
+        if (bInTable && line.length > 0) {
             [self handleTableLine:line isHead:false];
         } else {
             // not in block
@@ -186,45 +300,35 @@ const unichar headerChar = '#';
                 || [line indexOf:@"* "] == 0
                 || [line indexOf:@"+ "] == 0 ){
                     if (nCurrentBulletLevel == 0 ){
-                        [output  appendString:@"<ul>\n"];
+                        [_output  appendString:@"<ul>\n"];
                         [blockEndTags addObject:@"</ul>\n"];
                         nCurrentBulletLevel = 1;
                         isCurrentLineNeedBr = false;
                         
                     }
-                    [output appendString:@"<li>"];
+                    [_output appendString:@"<li>"];
                 NSString* newline = [line substringWithRange:NSMakeRange(@"- ".length, line.length - @"- ".length)];
                 //.substring("- ".length, end: line.length - 1)
                 [self handleLine:newline];
-                [output appendString:@"</li>\n"];
+                [_output appendString:@"</li>\n"];
                 continue;
                 } else {
                     if (nCurrentBulletLevel > 0) {
                         nCurrentBulletLevel = 0;
-                        [output appendString:@"</ul>\n"];
+                        [_output appendString:@"</ul>\n"];
                     }
                 }
             
-            if  ([line indexOf:@"```"] == 0) {
-                isInCodeBlock = true;
-                NSString* cssClass = @"no-highlight";
-                if (line.length > @"```".length) {
-                    //prettyprint javascript prettyprinted
-                    NSString* remaining = [line substringFromIndex:@"```".length];
-                    cssClass = [NSString stringWithFormat:  @"prettyprint lang-%@",remaining];
-                }
-                [output appendFormat:@"<pre class=\"%@\">\n",cssClass];
-                continue; // ignor current line
-            }
+         
             
             if (i + 1 <= lines.count - 1) {
                 NSString* nextLine = [lines[i + 1] trim];
                 if ([nextLine contains3PlusandOnlyChars:@"="]){
-                    [output appendFormat: @"<h1>%@</h1>\n",line ];
+                    [_output appendFormat: @"<h1>%@</h1>\n",line ];
                     i++;
                     continue;
                 } else if ([nextLine contains3PlusandOnlyChars:@"-"]){
-                    [output appendFormat: @"<h2>%@</h2>\n",line ];
+                    [_output appendFormat: @"<h2>%@</h2>\n",line ];
                     i++;
                     continue;
                 } else if ( [nextLine indexOf:@"|"] != NSNotFound
@@ -246,9 +350,11 @@ const unichar headerChar = '#';
             
             [self handleLine:line];
             if  (isCurrentLineNeedBr
-                && lines[i].length >= 2
+                && lines.count > 1
+                && lines[i].length > 2
+                
                 && [[lines[i] substringFromIndex:lines[i].length - 2] isEqualToString:@"  "] ){
-                    [output appendString:@"<br/>"];
+                    [_output appendString:@"<br/>"];
                 }
             
             //output += "</p>"
@@ -266,7 +372,8 @@ const unichar headerChar = '#';
 -(void) parseInLine:(NSString*)line {
     int len = (int)line.length;
     //int start = 0;
-    for (int i = 0; i < len ; i++) {
+    for (int i = 0; i < len && i>=0 ; i++) {
+        
         unichar ch = [line characterAtIndex:i];
         
         switch (ch) {
@@ -275,7 +382,7 @@ const unichar headerChar = '#';
         case '~':
             {
                 if (i + 1 > len - 1) {
-                    [output appendFormat:@"%c", ch];
+                    [_output appendFormat:@"%c", ch];
                     return;
                 }
                 NSString* strong = @"strong";
@@ -292,7 +399,7 @@ const unichar headerChar = '#';
                     NSString* remaining = [line substringFromIndex:  i + 1];
                     i += [self scanClosedChar: [NSString stringWithFormat:@"%c",ch ]
                                         inStr:remaining
-                                          tag: @"em"];
+                                          tag: @"em"] ;
                 }
             }
             break;
@@ -309,7 +416,7 @@ const unichar headerChar = '#';
                 
                 if (i >= line.length - 1 || [line characterAtIndex: i + 1] != '[') {
                     
-                    [output appendFormat:@"%c", ch];
+                    [_output appendFormat:@"%c", ch];
                     continue;
                 }
                 i++;
@@ -322,7 +429,7 @@ const unichar headerChar = '#';
                     urlTag.url = [line substringWithRange:NSMakeRange(i + 1 + posArray[1].intValue + 1,    posArray[2].intValue - posArray[1].intValue -1)];
                     //line.substring( i + 1 + posArray[1] + 1, end: i + 1 + posArray[2] - 1)
                     img.url = urlTag;
-                    [output appendString: [img toHtml]];
+                    [_output appendString: [img toHtml]];
                     i +=  posArray[2].intValue + 1;
                 }else {
                     // check image reference defintion
@@ -340,7 +447,7 @@ const unichar headerChar = '#';
                         refer.title = title;
                         [arrReferenceUsage addObject:refer];
                         
-                        [output appendString:  [refer placeHolder]];
+                        [_output appendString:  [refer placeHolder]];
                         i += posArray2[2].intValue + 1 + 1;
                     }
                 }
@@ -360,7 +467,7 @@ const unichar headerChar = '#';
                 URLTag* urlTag = [[URLTag alloc] initWithString:surl];
                 
                 link.url =  urlTag;
-                [output appendString: [link toHtml] ];
+                [_output appendString: [link toHtml] ];
                 i +=  posArray[2].intValue + 1;
             }else {
                 // check reference defintion
@@ -390,7 +497,7 @@ const unichar headerChar = '#';
                         refer.key = url.lowercaseString;
                         refer.title = title;
                         [arrReferenceUsage addObject: refer];
-                        [output appendString: [refer placeHolder]];
+                        [_output appendString: [refer placeHolder]];
                         i +=  pos + posArray2[2].intValue + 1 + 1;
                     }
                 }
@@ -398,11 +505,11 @@ const unichar headerChar = '#';
             }
                 break;
         case '\"':
-            [output appendString:@"&quot;"];
+            [_output appendString:@"&quot;"];
                 break;
         default:
             //do nothing
-            [output appendFormat:@"%C", ch];
+            [_output appendFormat:@"%C", ch];
         }
     }
 }
@@ -414,7 +521,7 @@ const unichar headerChar = '#';
         || [rawline contains3PlusandOnlyChars:@"*"]
         || [rawline contains3PlusandOnlyChars:@"_"]){
         [self closeParagraph];
-            [output appendString:@"<hr>\n"];
+            [_output appendString:@"<hr>\n"];
         return;
     }
     NSString* line = rawline;
@@ -423,7 +530,7 @@ const unichar headerChar = '#';
     int pos = 0;
     
     if ([line characterAtIndex:0] == '>') {
-        [output appendString:@"<blockquote>"];
+        [_output appendString:@"<blockquote>"];
         line = [line substringFromIndex:1];
         [endTags addObject:@"</blockquote>"];
     }
@@ -432,7 +539,7 @@ const unichar headerChar = '#';
     if (nFindHead > 0) {
         isCurrentLineNeedBr = false;
         
-        [output appendFormat:@"<h%d>",nFindHead];
+        [_output appendFormat:@"<h%d>",nFindHead];
         [endTags addObject: [NSString stringWithFormat: @"</h%d>",nFindHead]];
         pos += nFindHead;
     } else {
@@ -446,7 +553,7 @@ const unichar headerChar = '#';
     //output += "\n"
     
     for (int i = (int)(endTags.count) - 1; i >= 0; i--) {
-        [output appendString: endTags[i]];
+        [_output appendString: endTags[i]];
     }
     
     //output += "\n"
@@ -463,7 +570,7 @@ const unichar headerChar = '#';
     }
     NSArray* cols = [rawline  componentsSeparatedByString:@"|"];
     
-    [output appendString:@"<tr>"];
+    [_output appendString:@"<tr>"];
     int i = 0;
     
     for(NSString* col in cols) {
@@ -471,25 +578,25 @@ const unichar headerChar = '#';
         
         if (isHead) {
             NSString* colAlighStr = [NSString stringWithFormat:@"<th %@>",colAlign ];
-            [output appendString: colAlign.length > 0 ? colAlighStr : @"<th>"];
+            [_output appendString: colAlign.length > 0 ? colAlighStr : @"<th>"];
             [self parseInLine:col];
-            [output appendString:@"</th>"];
+            [_output appendString:@"</th>"];
         } else {
             NSString* colAlighStr = [NSString stringWithFormat:@"<td %@>",colAlign ];
-            [output appendString:colAlign.length > 0 ? colAlighStr : @"<td>"];
+            [_output appendString:colAlign.length > 0 ? colAlighStr : @"<td>"];
             [self parseInLine:col];
 
-            [output appendString:@"</td>"];
+            [_output appendString:@"</td>"];
         }
         i++;
     }
-    [output appendString:@"</tr>"];
+    [_output appendString:@"</tr>"];
 }
 
 -(void) beginTable:(NSString*)alignmentLine{
     if (!bInTable ){
         bInTable = true;
-        [output appendString:@"<table>"];
+        [_output appendString:@"<table>"];
         [tableColsAlignment removeAllObjects];
         NSArray<NSString *> * arr = [[alignmentLine trim] componentsSeparatedByString:@"|"];
         for (NSString* col in arr) {
@@ -521,7 +628,7 @@ const unichar headerChar = '#';
 
 -(void) closeTags{
     for (int i = (int)blockEndTags.count - 1; i >= 0; i--) {
-        [output appendString: blockEndTags[i]];
+        [_output appendString: blockEndTags[i]];
         //blockEndTags.removeAtIndex(i)
     }
     //blockEndTags.removeAll(keepCapacity: false)
@@ -531,14 +638,14 @@ const unichar headerChar = '#';
 -(void) closeParagraph{
     if (isInParagraph) {
         isInParagraph = false;
-        [output appendString: @"</p>\n"];
+        [_output appendString: @"</p>\n"];
     }
 }
 
 -(void) beginParagraph{
     if (!isInParagraph) {
         isInParagraph = true;
-        [output appendString: @"<p>"];
+        [_output appendString: @"<p>"];
     }
 }
 
@@ -546,7 +653,7 @@ const unichar headerChar = '#';
 -(void) closeTable{
     if (bInTable) {
         bInTable = false;
-        [output appendString: @"</table>"];
+        [_output appendString: @"</table>"];
     }
 }
 
@@ -554,14 +661,14 @@ const unichar headerChar = '#';
     NSUInteger pos = [inStr indexOf:ch];
     if (pos != NSNotFound) {
         NSString* temp = [inStr substringToIndex:pos];
-        [output appendFormat:@"<%@>%@</%@>",
+        [_output appendFormat:@"<%@>%@</%@>",
          tag,
          temp,
          tag];
         return pos + ch.length;
     } else {
-        [output appendString:ch];
-        return ch.length;
+        [_output appendString:ch];
+        return ch.length - 1;
     }
     
 }

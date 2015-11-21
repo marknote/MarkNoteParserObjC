@@ -13,7 +13,7 @@
 -(NSString*)trim{
     
     NSString *trimmedString = [self stringByTrimmingCharactersInSet:
-                               [NSCharacterSet whitespaceCharacterSet]];
+                               [NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return trimmedString;
 }
 
