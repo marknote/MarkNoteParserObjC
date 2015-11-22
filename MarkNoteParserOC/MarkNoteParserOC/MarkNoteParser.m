@@ -33,12 +33,7 @@ const unichar headerChar = '#';
     return self;
 }
 
-//var nOldBulletLevel = 0
-/*var nCurrentBulletLevel = 0
 
-
-
-*/
 
 +(NSString*) toHtml:(NSString*)input{
     MarkNoteParser* instance = [[MarkNoteParser alloc]init];
@@ -91,19 +86,10 @@ const unichar headerChar = '#';
 
 -(void) proceedCodeBlock:(NSString*)string{
    
-    //NSString* preProceeded = [input stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
-    //preProceeded = [preProceeded stringByReplacingOccurrencesOfString:@"\n" withString:@"  \n"];
     
-    //NSArray<NSString*>* lines = [preProceeded componentsSeparatedByString:@"\n" ];
-    //BOOL isInCodeBlock = false;
-    
-    //NSMutableString *nonCodeblockString = [[NSMutableString alloc] init];
-    
-    //for rawline in lines {
-    //NSUInteger pos = [input indexOf:@"\n```"];
     int blockCount = 0;
     NSRange searchRange = NSMakeRange(0,string.length);
-    NSString *codeTag = @"```";
+    NSString *codeTag = @"\n```";
     NSRange foundRange;
     NSRange proceedRange;
     while (searchRange.location < string.length) {
@@ -122,10 +108,6 @@ const unichar headerChar = '#';
             //break;
             proceedRange = searchRange;//NSMakeRange(searchRange.location, foundRange.location);
         }
-        //if (proceedRange.length == 0) continue;
-        //NSString* stringBeforeTag =  [string substringWithRange:proceedRange];
-        
-        
         // proceed contents before code
         if (blockCount % 2 == 1) { // code block just begins
             if(proceedRange.length >0 ){
@@ -135,7 +117,7 @@ const unichar headerChar = '#';
             
             if(searchRange.location < string.length) {
                 NSRange rangeOfNewLine = [string rangeOfString:@"\n" options:NSLiteralSearch range:
-                                         NSMakeRange(searchRange.location, string.length - searchRange.location) ] ;//[[string substringWithRange:searchRange] rangeOfString: @"\n"];
+                                         NSMakeRange(searchRange.location, string.length - searchRange.location) ] ;
                 if (rangeOfNewLine.location != NSNotFound) {
                     NSRange cssRange = NSMakeRange(searchRange.location , rangeOfNewLine.location - searchRange.location );
                     searchRange.location += cssRange.length;
@@ -170,45 +152,6 @@ const unichar headerChar = '#';
     }
     
     
-    /*for (int i = 0; i < lines.count; i++){
-        NSString* line = lines[i];
-        
-        if  ([line indexOf:@"```"] == 0) {
-            isInCodeBlock = !isInCodeBlock; // code block flag
-            
-            
-            if (isInCodeBlock) {
-                [self proceedHTMLTags:nonCodeblockString];
-                [nonCodeblockString setString:@""];
-
-                NSString* cssClass = @"no-highlight";
-                line = [line trim];
-                if (line.length > @"```".length) {
-                    //prettyprint javascript prettyprinted
-                    NSString* remaining = [line substringFromIndex:@"```".length];
-                    cssClass = [NSString stringWithFormat:  @"prettyprint lang-%@",remaining];
-                }
-                [output appendFormat:@"<pre class=\"%@\">\n",cssClass];
-                continue; // ignor current line
-            } else {
-                [output appendString:@"</pre>\n"];
-            }
-        }else {
-            if (isInCodeBlock) {
-                // current line is code
-                [output appendFormat:@"%@\n",line];
-            } else {
-                // current line is not in code block, put into stack directly
-                
-                [nonCodeblockString appendFormat:@"%@  \n",line];
-            }
-        }
-    }
-    
-    [self proceedHTMLTags:nonCodeblockString];
-    [nonCodeblockString setString:@""];*/
-
-
 }
 
 -(void) proceedHTMLTags:(NSString*)input{

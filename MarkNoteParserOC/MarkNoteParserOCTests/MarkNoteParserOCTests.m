@@ -56,11 +56,11 @@ NSString* markdown(NSString* input){
 }
 
 - (void) testFencedCode {
-    assertHtmlEauql(@"<pre class=\"prettyprint lang-swift\">println(\"Hello\")\n</pre>\n" ,markdown(@"```swift\nprintln(\"Hello\")\n```"));
+    assertHtmlEauql(@"<pre class=\"prettyprint lang-swift\">println(\"Hello\")\n</pre>\n" ,markdown(@"\n```swift\nprintln(\"Hello\")\n```"));
 }
 
 - (void) testFencedCodeHTML {
-    assertHtmlEauql(@"<pre class=\"no-highlight\"><div>code</div></pre>\n" ,markdown(@"\n```\n <div>code</div> ```\n"));
+    assertHtmlEauql(@"<pre class=\"no-highlight\"><div>code</div></pre>\n" ,markdown(@"\n```\n <div>code</div> \n```\n"));
 }
 
 - (void) testInLineCode {
@@ -118,7 +118,7 @@ NSString* markdown(NSString* input){
 }
 
 - (void)testBlockCode {
-    assertHtmlEauql(@"<pre class=\"no-highlight\">\r\nHello\r\n</pre>\n" ,markdown(@"``` \r\nHello\r\n```\n"));
+    assertHtmlEauql(@"<pre class=\"no-highlight\">\r\nHello\r\n</pre>\n" ,markdown(@"\n``` \r\nHello\r\n```\n"));
 }
 
 - (void) testDoubleEmphasis{
@@ -190,7 +190,7 @@ NSString* markdown(NSString* input){
 
 - (void) testHTMLInCode{
     
-    let input = @"```\n&lt;html&gt;\n```\n";
+    let input = @"\n```\n&lt;html&gt;\n```\n";
     let expected = @"<pre class=\"no-highlight\">&lt;html&gt;</pre>";
     let actual = markdown(input);
     assertHtmlEauql(expected ,actual);
