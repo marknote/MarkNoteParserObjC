@@ -134,7 +134,10 @@ const unichar headerChar = '#';
             if (blockCount > 0 && foundRange.location != NSNotFound) {
                 
                 if(proceedRange.length >0 ){
-                    [_output appendString:[string substringWithRange:proceedRange]];
+                    [_output appendString:
+                     [[[string substringWithRange:proceedRange] stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"]
+                      stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"]
+                     ];
                 }
                 
                 [_output appendString:@"</pre>\n"];
